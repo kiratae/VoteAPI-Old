@@ -170,8 +170,11 @@ app.post("/api/deleteImage", (req, res) => {
 app.get("/timesync", (req, res) => {
 
     const config = require('./config/config.js')
-    const mysql = require('mysql')
-    const db = mysql.createConnection(config.mysql_connect)
+    // const mysql = require('mysql')
+    // const db = mysql.createConnection(config.mysql_connect)
+    const { Client } = require('pg');
+    const db = new Client(config.postgresql_connect);
+    db.connect();
 
     //sql
     let sql = `SELECT NOW() AS now`;
@@ -184,9 +187,9 @@ app.get("/timesync", (req, res) => {
             res.json({ "error": err });
         }
 
-        console.log(results);
+        console.log(results.rows);
 
-        res.json(results)
+        res.json(results.rows)
     })
 
 
