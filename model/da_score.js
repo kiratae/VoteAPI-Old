@@ -179,7 +179,7 @@ var Score = {
     },
     reset_all: (req, res) => {
         //sql
-        let sql = `UPDATE vt_score SET sc_score = 0`;
+        let sql = `DELETE FROM vt_voting_logs`;
 
         console.log(`Score -> call: reset_all`);
 

@@ -106,7 +106,7 @@ app.post('/restore_vl', my_model.da_voting_logs.VotingLogs.delete)
 
 app.get('/score', my_model.m_score.Score.get_score)
 app.put('/score', my_model.da_user_point_matching.UserPointMatching.update)
-// app.get('/resetScore', my_model.da_score.Score.reset_all) // DEPRECATED
+app.get('/resetScore', my_model.da_score.Score.reset_all)
 
 app.get('/vote_time', my_model.m_vote_time.VoteTime.get_all)
 app.put('/vote_time', my_model.da_vote_time.VoteTime.update)
@@ -131,41 +131,41 @@ app.put('/scrum/events', my_model.da_event.Event.update)
 
 // ------------- END scrum ---------------------------
 
-app.post("/api/Upload", (req, res) => {
+// app.post("/api/Upload", (req, res) => {
 
-    upload(req, res, function(err) {
-        if (err instanceof multer.MulterError) {
-            // A Multer error occurred when uploading.
-            console.log("A Multer error occurred when uploading.");
-        } else if (err) {
-            console.log("An unknown error occurred when uploading.");
-            // An unknown error occurred when uploading.
-        }
+//     upload(req, res, function(err) {
+//         if (err instanceof multer.MulterError) {
+//             // A Multer error occurred when uploading.
+//             console.log("A Multer error occurred when uploading.");
+//         } else if (err) {
+//             console.log("An unknown error occurred when uploading.");
+//             // An unknown error occurred when uploading.
+//         }
 
-        sharp(req.file.path)
-            .resize(64, 64)
-            .toBuffer(function(err, info) {
+//         sharp(req.file.path)
+//             .resize(64, 64)
+//             .toBuffer(function(err, info) {
 
-                console.log("resizing image to 64x64 pixel.");
-                fs.writeFile("./public/images/cluster/" + req.file.filename, info, (err) => {
-                    if (err) throw err;
-                    console.log('The file has been saved!');
-                });
+//                 console.log("resizing image to 64x64 pixel.");
+//                 fs.writeFile("./public/images/cluster/" + req.file.filename, info, (err) => {
+//                     if (err) throw err;
+//                     console.log('The file has been saved!');
+//                 });
 
-                console.log("uploaded file: " + req.file.filename);
+//                 console.log("uploaded file: " + req.file.filename);
 
-                res.send(req.file);
-            })
+//                 res.send(req.file);
+//             })
 
-    });
+//     });
 
-});
-app.post("/api/deleteImage", (req, res) => {
+// });
+// app.post("/api/deleteImage", (req, res) => {
 
-    unlinkAsync("./public/images/cluster/" + req.body.filename)
+//     unlinkAsync("./public/images/cluster/" + req.body.filename)
 
-    res.json({ "status": 1 })
-});
+//     res.json({ "status": 1 })
+// });
 
 app.get("/timesync", (req, res) => {
 
