@@ -16,8 +16,7 @@ if (process.env.DATABASE_URL) {
 } else {
     // postgresql "local"
     exports.postgresql_connect = {
-        connectionString: 'postgresql://Kiratae:1150@localhost:5432/vote_db'
-        
+        connectionString: 'postgresql://user:pwd@localhost:5432/db_name'
     }
 }
 
