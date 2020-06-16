@@ -11,7 +11,10 @@ var VotingLogs = {
         //check Hash
         // if(md5("l3ear@Hunt;") == req.body.hash){
             //sql
-            let sql = `SELECT IF(COALESCE((um_points - (SELECT SUM(vl_points) FROM vt_voting_logs WHERE vl_us_id = us.us_id GROUP BY vl_us_id)), um_points) - $1 >= 0, true, false) AS can_vote
+            let sql = ` SELECT CASE 
+                            WHEN COALESCE((um_points - (SELECT SUM(vl_points) FROM vt_voting_logs WHERE vl_us_id = us.us_id GROUP BY vl_us_id)), um_points) - $1 >= 0
+                            THEN true ELSE false END
+                            AS can_vote
                         FROM vt_users us
                         LEFT JOIN vt_user_point_matching ON um_us_id = us_id
                         WHERE us_id = $2`;
