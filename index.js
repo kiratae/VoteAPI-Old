@@ -1,8 +1,6 @@
 #!/usr/bin/env node
  //require dependencies
 const express = require('express');
-const multer = require('multer');
-const sharp = require('sharp');
 const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -10,11 +8,6 @@ const my_model = require('./model/my_model');
 
 var types = require('pg').types
 types.setTypeParser(20, parseInt);
-
-const fs = require('fs')
-const { promisify } = require('util')
-
-const unlinkAsync = promisify(fs.unlink)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -45,17 +38,6 @@ app.use(function(req, res, next) {
 
 //start Express server on defined port
 app.listen(PORT);
-
-// Storage file
-var Storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, "./public/images/cluster");
-    },
-    filename: function(req, file, callback) {
-        callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-    }
-});
-var upload = multer({ storage: Storage }).single('ct_img'); //Field name and max count
 
 //define a route, usually this would be a bunch of routes imported from another file
 app.get('/', function(req, res, next) {
@@ -131,42 +113,6 @@ app.put('/scrum/events', my_model.da_event.Event.update)
 
 // ------------- END scrum ---------------------------
 
-// app.post("/api/Upload", (req, res) => {
-
-//     upload(req, res, function(err) {
-//         if (err instanceof multer.MulterError) {
-//             // A Multer error occurred when uploading.
-//             console.log("A Multer error occurred when uploading.");
-//         } else if (err) {
-//             console.log("An unknown error occurred when uploading.");
-//             // An unknown error occurred when uploading.
-//         }
-
-//         sharp(req.file.path)
-//             .resize(64, 64)
-//             .toBuffer(function(err, info) {
-
-//                 console.log("resizing image to 64x64 pixel.");
-//                 fs.writeFile("./public/images/cluster/" + req.file.filename, info, (err) => {
-//                     if (err) throw err;
-//                     console.log('The file has been saved!');
-//                 });
-
-//                 console.log("uploaded file: " + req.file.filename);
-
-//                 res.send(req.file);
-//             })
-
-//     });
-
-// });
-// app.post("/api/deleteImage", (req, res) => {
-
-//     unlinkAsync("./public/images/cluster/" + req.body.filename)
-
-//     res.json({ "status": 1 })
-// });
-
 app.get("/timesync", (req, res) => {
 
     const config = require('./config/config.js')
@@ -191,6 +137,7 @@ app.get("/timesync", (req, res) => {
 
         res.json(results.rows)
     })
+
 
 
 });
