@@ -198,36 +198,48 @@ var Systems = {
         console.log(`Systems -> call: delete [sm_sys_id = ${sm_sys_id}]`);
 
         db.connect()
-        db.query(sql, data, function(err, results, fields) {
-            if (err) {
-                return console.error(err.message)
-            }
-            let sql = `DELETE FROM vt_systems WHERE sys_id = $1`;
-
-            let sys_id = req.params.sys_id;
-            let data = [sys_id]
-
-            console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
-
-            //query the DB using prepared statement
             // db.query(sql, data, function(err, results, fields) {
-            //     db.end()
             //     if (err) {
             //         return console.error(err.message)
             //     }
-            //     res.end()
+            //     let sql = `DELETE FROM vt_systems WHERE sys_id = $1`;
+            //     let sys_id = req.params.sys_id;
+            //     let data = [sys_id]
+            //     console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
+            //     // query the DB using prepared statement
+            //     db.query(sql, data, function(err, results, fields) {
+            //         db.end()
+            //         if (err) {
+            //             return console.error(err.message)
+            //         }
+            //         res.end()
+            //     })
             // })
 
-            db.query(sql, data)
-                .then(result => {
-                    res.end()
-                })
-                .catch(e => {
-                    console.error(e.stack)
-                    res.json({ error: e.stack })
-                })
-                .then(() => db.end())
-        })
+        db.query(sql, data)
+            .then(result => {
+
+                let sql = `DELETE FROM vt_systems WHERE sys_id = $1`;
+                let sys_id = req.params.sys_id;
+                let data = [sys_id]
+
+                console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
+
+                db.query(sql, data)
+                    .then(result => {
+                        res.end()
+                    })
+                    .catch(e => {
+                        console.error(e.stack)
+                        res.json({ error: e.stack })
+                    })
+                    .then(() => db.end())
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
     },
 }
 
