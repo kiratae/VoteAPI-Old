@@ -20,7 +20,7 @@ var Cluster = {
                     LEFT JOIN vt_systems ON sm_sys_id = sys_id
                     ORDER BY ct_sequence ASC`;
 
-        console.log(`call: get_all`);
+        console.log(`Cluster -> call: get_all`);
 
         //query the DB using prepared statement
         var results = db.query(sql, function(err, results, fields) {
@@ -93,7 +93,7 @@ var Cluster = {
                     LEFT JOIN vt_score ON sc_ct_id = ct_id
                     ORDER BY ct_sequence ASC`;
 
-        console.log(`call: get_all`);
+        console.log(`Cluster -> call: get_all_dashboard`);
 
         //query the DB using prepared statement
         var results = db.query(sql, function(err, results, fields) {
@@ -162,7 +162,7 @@ var Cluster = {
                     LEFT JOIN vt_score ON sc_ct_id = ct_id
                     ORDER BY total_money DESC`;
 
-        console.log(`call: get_all`);
+        console.log(`Cluster -> call: get_all_leaderboard`);
 
         //query the DB using prepared statement
         var results = db.query(sql, function(err, results, fields) {

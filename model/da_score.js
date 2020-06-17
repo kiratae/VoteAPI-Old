@@ -181,7 +181,7 @@ var Score = {
         //sql
         let sql = `DELETE FROM vt_voting_logs`;
 
-        console.log(`Score -> call: reset_all`);
+        console.log(`Score(vt_voting_logs) -> call: reset_all`);
 
         //query the DB using prepared statement
         db.query(sql, function(err){

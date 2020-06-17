@@ -23,7 +23,7 @@ var Cluster = {
         let ct_color_code = req.body.ct_color_code;
         let data = [ ct_sequence, ct_name_th, ct_name_en, ct_img, ct_color_code ]
 
-        console.log(`call: insert [ct_name_th = ${ct_name_th}]`);
+        console.log(`Cluster -> call: insert [ct_name_th = ${ct_name_th}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){
@@ -92,7 +92,7 @@ var Cluster = {
 
             let sm_ct_id = ct_id;
             let sm_sys_id = req.body.sm_sys_id;
-            let data = [ sm_ct_id, sm_sys_id ]
+            let data = [ sm_sys_id, sm_ct_id ]
 
             db.query(sql, data, function(err, results, fields){
                 if (err) {
@@ -124,7 +124,7 @@ var Cluster = {
 
         if(!ct_id) res.end();
 
-        console.log(`call: get_by_key [ ct_id = ${ct_id} ]`);
+        console.log(`Cluster -> call: get_by_key [ ct_id = ${ct_id} ]`);
 
         //query the DB using prepared statement
         var results = db.query(sql, data, function(err, results, fields){
@@ -184,7 +184,7 @@ var Cluster = {
 
         if(!sm_ct_id) res.end();
 
-        console.log(`call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
+        console.log(`Cluster -> call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){

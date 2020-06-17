@@ -17,7 +17,7 @@ var VoteTime = {
         let sql =  `SELECT *
                     FROM vt_vote_time`;
 
-        console.log(`Cluster -> call: get_all`);
+        console.log(`VoteTime -> call: get_all *`);
 
         //query the DB using prepared statement
         var results = db.query(sql, function(err, results, fields){

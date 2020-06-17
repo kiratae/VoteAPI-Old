@@ -20,7 +20,7 @@ var Systems = {
         let sys_name_en = req.body.sys_name_en;
         let data = [ sys_name_th, sys_name_en ]
 
-        console.log(`call: insert [sys_name_th = ${sys_name_th}]`);
+        console.log(`Systems -> call: insert [sys_name_th = ${sys_name_th}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){
@@ -55,7 +55,7 @@ var Systems = {
 
         if(!sys_id) res.end();
 
-        console.log(`call: update [sys_id = ${sys_id}]`);
+        console.log(`Systems -> call: update [sys_id = ${sys_id}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){
@@ -86,7 +86,7 @@ var Systems = {
 
         if(!ct_id) res.end();
 
-        console.log(`call: get_by_key [ ct_id = ${ct_id} ]`);
+        console.log(`Systems -> call: get_by_key [ ct_id = ${ct_id} ]`);
 
         //query the DB using prepared statement
         var results = db.query(sql, data, function(err, results, fields){
@@ -146,7 +146,7 @@ var Systems = {
 
         if(!sys_id) res.end();
 
-        console.log(`call: delete [sm_sys_id = ${sm_sys_id}]`);
+        console.log(`Systems -> call: delete [sm_sys_id = ${sm_sys_id}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){
@@ -159,7 +159,7 @@ var Systems = {
             let sys_id = req.params.sys_id;
             let data = [ sys_id ]
 
-            console.log(`call: delete [sys_id = ${sys_id}]`);
+            console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
 
             //query the DB using prepared statement
             db.query(sql, data, function(err, results, fields){

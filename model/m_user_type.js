@@ -16,7 +16,7 @@ var UserType = {
         //sql
         let sql =  `SELECT * FROM vt_user_type`;
 
-        //console.log(`call: get_all [us_username = ${us_username}]`);
+        console.log(`UserType -> call: get_all *`);
 
         //query the DB using prepared statement
         var results = db.query(sql, function(err, results, fields){

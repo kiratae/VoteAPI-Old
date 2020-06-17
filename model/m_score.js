@@ -20,7 +20,7 @@ var Score = {
                     GROUP BY ct_id
                     ORDER BY ct_sequence`;
 
-        console.log(`call: get_score`);
+        console.log(`Score(vt_voting_logs) -> call: get_score`);
 
         //query the DB using prepared statement
         var results = db.query(sql, function(err, results, fields){

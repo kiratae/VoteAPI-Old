@@ -21,7 +21,7 @@ var Users = {
         let us_ut_id = req.body.us_ut_id;
         let data = [ us_username, us_password, us_ut_id ];
 
-        console.log(`call: insert [us_username = ${us_username}]`);
+        console.log(`Users -> call: insert [us_username = ${us_username}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){
@@ -39,7 +39,7 @@ var Users = {
             let um_points = req.body.um_points;
             let data = [ um_us_id, um_points ];
 
-            console.log(`call: insert [um_points = ${um_points}]`);
+            console.log(`Users -> call: insert [um_points = ${um_points}]`);
 
             //query the DB using prepared statement
             db.query(sql, data, function(err, results, fields){
@@ -171,7 +171,7 @@ var Users = {
 
         if(!us_id) res.end();
 
-        console.log(`call: update_login [us_id = ${us_id}]`);
+        console.log(`Users -> call: update_login [us_id = ${us_id}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err){
@@ -200,7 +200,7 @@ var Users = {
 
         if(!us_id) res.end();
 
-        console.log(`call: delete [us_id = ${us_id}]`);
+        console.log(`Users -> call: delete [us_id = ${us_id}]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){

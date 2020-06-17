@@ -23,7 +23,7 @@ var VoteTime = {
         let vt_end_vote = req.body.vt_end_vote;
         let data = [ vt_start_vote, vt_end_vote ]
 
-        console.log(`call: update [vt_vote_time]`);
+        console.log(`VoteTime -> call: update [vt_vote_time]`);
 
         //query the DB using prepared statement
         db.query(sql, data, function(err, results, fields){

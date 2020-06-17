@@ -125,6 +125,7 @@ app.get("/timesync", (req, res) => {
     //sql
     let sql = `SELECT NOW() AS now`;
 
+    console.log(`timesync -> call now`)
 
     var results = db.query(sql, function(err, results) {
         //if error, print blank results

@@ -17,7 +17,7 @@ var Systems = {
         let sql =  `SELECT *
                     FROM vt_systems`;
 
-        console.log(`call: get_all`);
+        console.log(`Systems -> call: get_all`);
 
         //query the DB using prepared statement
         var results = db.query(sql, function(err, results, fields){
