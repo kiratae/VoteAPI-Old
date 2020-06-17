@@ -3,7 +3,6 @@ const config = require('../config/config.js')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
-db.connect();
 
 var VoteTime = {
     get_all: (req, res) => {
@@ -19,34 +18,16 @@ var VoteTime = {
 
         console.log(`VoteTime -> call: get_all *`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields){
-            //if error, print blank results
-            if (err) {
-                console.log(err);
-                res.json({"error":err});
-            }
-
-            //make results 
-            var resultJson = JSON.stringify(results.rows);
-            resultJson = JSON.parse(resultJson);
-            var apiResult = {}
-
-            // create a meta table to help apps
-            //do we have results? what section? etc
-            apiResult.meta = {
-                table: section,
-                type: "collection",
-                total: 1,
-                total_entries: resultJson.length
-            }
-
-            //add our JSON results to the data table
-            apiResult.data = resultJson;
-
-            //send JSON to Express
-            res.json(apiResult)
+        db.connect()
+        db.query(sql, data)
+        .then(result => {
+            res.json({ status: 1, data: result.rows })
         })
+        .catch(e => {
+            console.error(e.stack)
+            res.json({ error: e })
+        })
+        .then(() => db.end())
     }
 }
 

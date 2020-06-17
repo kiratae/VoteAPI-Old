@@ -5,7 +5,6 @@ const md5 = require('md5');
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
-db.connect();
 
 /*
 ❌❌❌❌❌❌❌❌❌❌❌❌❌
@@ -28,20 +27,20 @@ var Score = {
         let us_username = req.body.us_username;
         let us_password = req.body.us_password;
         let us_ut_id = req.body.us_ut_id;
-        let data = [ us_username, us_password, us_ut_id ]
+        let data = [us_username, us_password, us_ut_id]
 
         console.log(`call: insert [us_username = ${us_username}]`);
 
         //query the DB using prepared statement
-        db.query(sql, data, function(err, results, fields){
+        db.query(sql, data, function (err, results, fields) {
             //if error, print error results
             if (err) {
                 console.log(err);
-                res.json({"error": err});
+                res.json({ "error": err });
             }
             // get inserted id
             console.log(`us_id: ${results.insertId}\n`)
-            res.json({cht_id:results.insertId})
+            res.json({ cht_id: results.insertId })
         })
 
     },
@@ -52,23 +51,23 @@ var Score = {
         let section = pathname[1];
 
         //sql
-        let sql =  `SELECT us_id, us_username, us_lastlogin, um_points
+        let sql = `SELECT us_id, us_username, us_lastlogin, um_points
                     FROM vt_users
                     LEFT JOIN vt_user_point_matching
                     ON um_us_id = us_id
                     WHERE  us_id = ?`;
-        
+
         let us_id = req.params.us_id;
-        let data = [ us_id ]
+        let data = [us_id]
 
         console.log(`call: get_by_key`);
 
         //query the DB using prepared statement
-        var results = db.query(sql, data, function(err, results, fields){
+        var results = db.query(sql, data, function (err, results, fields) {
             //if error, print error results
             if (err) {
                 console.log(err);
-                res.json({"error": err});
+                res.json({ "error": err });
             }
 
             //make results 
@@ -100,34 +99,34 @@ var Score = {
         let section = pathname[1];
 
         //check Hash
-        if(md5("l3ear@Hunt;") == req.body.hash){
+        if (md5("l3ear@Hunt;") == req.body.hash) {
             //sql
             let sql = `UPDATE vt_score SET sc_score = sc_score + ? WHERE sc_ct_id = ?`;
 
             let us_id = req.body.us_id;
             let sc_score = req.body.sc_score;
             let sc_ct_id = req.body.ct_id;
-            let data = [ sc_score, sc_ct_id ]
+            let data = [sc_score, sc_ct_id]
 
             console.log(`call: update [sc_ct_id = ${sc_ct_id}]`);
 
             //query the DB using prepared statement
-            db.query(sql, data, function(err){
+            db.query(sql, data, function (err) {
                 //if error, print error results
                 if (err) {
                     console.log(err);
-                    res.json({"error": err});
+                    res.json({ "error": err });
                 }
 
                 // my_model.da_user_point_matching.UserPointMatching.vote(req, res);
 
-                res.json({"status":true});
+                res.json({ "status": true });
             });
 
-        }else{
+        } else {
             res.end();
         }
-        
+
     },
     restore: (req, res) => {
         //sql
@@ -135,43 +134,43 @@ var Score = {
 
         let sc_id = req.body.sc_id;
         let sc_score = req.body.sc_score;
-        let data = [ sc_id ];
+        let data = [sc_id];
 
-        db.query(sql, data, function(err, results){
+        db.query(sql, data, function (err, results) {
             //if error, print error results
             if (err) {
                 console.log(err);
-                res.json({"error": err});
+                res.json({ "error": err });
             }
 
             let score = results[0]['sc_score'];
 
-            if(sc_score - score >= 0){
+            if (sc_score - score >= 0) {
 
                 let sql = `UPDATE vt_score SET sc_score = sc_score - ? WHERE sc_id = ?`;
 
                 let sc_id = req.body.sc_id;
                 let sc_score = req.body.sc_score;
-                let data = [ sc_score, sc_id ];
-        
+                let data = [sc_score, sc_id];
+
                 console.log(`Score -> call: restore [sc_id = ${sc_id}, sc_score = ${sc_score}]`);
-        
+
                 //query the DB using prepared statement
-                db.query(sql, data, function(err){
+                db.query(sql, data, function (err) {
                     //if error, print error results
                     if (err) {
                         console.log(err);
-                        res.json({"error": err});
+                        res.json({ "error": err });
                     }
-        
-                    res.json({"status": true});
-        
+
+                    res.json({ "status": true });
+
                     // my_model.da_voting_logs.VotingLogs.delete(req, res);
                 });
 
-            }else{
+            } else {
 
-                res.json({"status": false});
+                res.json({ "status": false });
 
             }
 
@@ -183,15 +182,16 @@ var Score = {
 
         console.log(`Score(vt_voting_logs) -> call: reset_all`);
 
-        //query the DB using prepared statement
-        db.query(sql, function(err){
+        db.connect()
+        db.query(sql, function (err) {
+            db.end()
             //if error, print error results
             if (err) {
                 console.log(err);
-                res.json({"error": err});
+                res.json({ "error": err });
             }
 
-            res.json({"reset":true});
+            res.json({ "reset": true });
         });
     },
     delete: (req, res) => {

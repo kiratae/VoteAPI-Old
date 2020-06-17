@@ -3,7 +3,6 @@ const config = require('../config/config.js')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
-db.connect();
 
 var Systems = {
     insert: (req, res) => {
@@ -22,8 +21,9 @@ var Systems = {
 
         console.log(`Systems -> call: insert [sys_name_th = ${sys_name_th}]`);
 
-        //query the DB using prepared statement
+        db.connect()
         db.query(sql, data, function(err, results, fields){
+            db.end()
             if (err) {
                 return console.error(err.message)
             }
@@ -57,8 +57,9 @@ var Systems = {
 
         console.log(`Systems -> call: update [sys_id = ${sys_id}]`);
 
-        //query the DB using prepared statement
+        db.connect()
         db.query(sql, data, function(err, results, fields){
+            db.end()
             if (err) {
                 return console.error(err.message)
             }
@@ -88,8 +89,9 @@ var Systems = {
 
         console.log(`Systems -> call: get_by_key [ ct_id = ${ct_id} ]`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, data, function(err, results, fields){
+        db.connect()
+        db.query(sql, data, function(err, results, fields){
+            db.end()
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -148,7 +150,7 @@ var Systems = {
 
         console.log(`Systems -> call: delete [sm_sys_id = ${sm_sys_id}]`);
 
-        //query the DB using prepared statement
+        db.connect()
         db.query(sql, data, function(err, results, fields){
             if (err) {
                 return console.error(err.message)
@@ -163,6 +165,7 @@ var Systems = {
 
             //query the DB using prepared statement
             db.query(sql, data, function(err, results, fields){
+                db.end()
                 if (err) {
                     return console.error(err.message)
                 }

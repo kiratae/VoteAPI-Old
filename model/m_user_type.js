@@ -3,7 +3,6 @@ const config = require('../config/config.js')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
-db.connect();
 
 var UserType = {
     get_all: function(req, res){
@@ -19,7 +18,9 @@ var UserType = {
         console.log(`UserType -> call: get_all *`);
 
         //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields){
+        db.connect()
+        db.query(sql, function(err, results, fields){
+            db.end()
             //if error, print blank results
             if (err) {
                 // console.log(err);

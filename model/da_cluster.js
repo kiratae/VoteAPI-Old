@@ -3,7 +3,6 @@ const config = require('../config/config.js')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
-db.connect();
 
 var Cluster = {
     insert: (req, res) => {
@@ -26,6 +25,7 @@ var Cluster = {
         console.log(`Cluster -> call: insert [ct_name_th = ${ct_name_th}]`);
 
         //query the DB using prepared statement
+        db.connect()
         db.query(sql, data, function(err, results, fields){
             if (err) {
                 return console.error(err.message)
@@ -40,6 +40,7 @@ var Cluster = {
             let data = [ sm_ct_id, sm_sys_id ]
 
             db.query(sql, data, function(err, results, fields){
+                db.end()
                 if (err) {
                     return console.error(err.message)
                 }
@@ -82,7 +83,7 @@ var Cluster = {
 
         console.log(`Cluster -> call: update [ct_id = ${ct_id}]`);
 
-        //query the DB using prepared statement
+        db.connect()
         db.query(sql, data, function(err, results, fields){
             if (err) {
                 return console.error(err.message)
@@ -95,6 +96,7 @@ var Cluster = {
             let data = [ sm_sys_id, sm_ct_id ]
 
             db.query(sql, data, function(err, results, fields){
+                db.end()
                 if (err) {
                     return console.error(err.message)
                 }
@@ -126,8 +128,9 @@ var Cluster = {
 
         console.log(`Cluster -> call: get_by_key [ ct_id = ${ct_id} ]`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, data, function(err, results, fields){
+        db.connect()
+        db.query(sql, data, function(err, results, fields){
+            db.end()
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -186,8 +189,9 @@ var Cluster = {
 
         console.log(`Cluster -> call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
 
-
+        db.connect()
         db.query(sql, data, function(err, results, fields){
+            db.end()
             if (err) {
                 return console.error(err.message)
             }

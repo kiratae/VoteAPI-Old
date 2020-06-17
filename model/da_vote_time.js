@@ -3,7 +3,6 @@ const config = require('../config/config.js')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
-db.connect();
 
 var VoteTime = {
     update: (req, res) => {
@@ -25,15 +24,16 @@ var VoteTime = {
 
         console.log(`VoteTime -> call: update [vt_vote_time]`);
 
-        //query the DB using prepared statement
-        db.query(sql, data, function(err, results, fields){
-            if (err) {
-                return console.error(err.message)
-            }
-
-            res.json({ 'status':true })
-            
+        db.connect()
+        db.query(sql, data)
+        .then(result => {
+            res.json({ status: 1, data: result.rows })
         })
+        .catch(e => {
+            console.error(e.stack)
+            res.json({ error: e })
+        })
+        .then(() => db.end())
     }
 }
 

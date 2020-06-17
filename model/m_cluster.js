@@ -3,7 +3,6 @@ const config = require('../config/config.js')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
-db.connect();
 
 var Cluster = {
     get_all: (req, res) => {
@@ -23,7 +22,9 @@ var Cluster = {
         console.log(`Cluster -> call: get_all`);
 
         //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields) {
+        db.connect()
+        db.query(sql, function(err, results, fields) {
+            db.end()
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -96,7 +97,9 @@ var Cluster = {
         console.log(`Cluster -> call: get_all_dashboard`);
 
         //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields) {
+        db.connect()
+        db.query(sql, function(err, results, fields) {
+            db.end()
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -165,7 +168,9 @@ var Cluster = {
         console.log(`Cluster -> call: get_all_leaderboard`);
 
         //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields) {
+        db.connect()
+        db.query(sql, function(err, results, fields) {
+            db.end()
             //if error, print blank results
             if (err) {
                 // console.log(err);

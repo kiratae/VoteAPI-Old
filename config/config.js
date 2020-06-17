@@ -16,8 +16,11 @@ if (process.env.DATABASE_URL) {
 } else {
     // postgresql "local"
     exports.postgresql_connect = {
-        connectionString: 'postgresql://user:pwd@localhost:5432/db_name'
+        // connectionString: 'postgresql://user:pwd@localhost:5432/db_name'
+        connectionString: 'postgresql://Kiratae:1150@localhost:5432/vote_db'
     }
 }
+
+exports.SECRET = "MY_SECRET_KEY";
 
 exports.mysql_connect = mysql_connect

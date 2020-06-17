@@ -1,23 +1,94 @@
 #!/usr/bin/env node
- //require dependencies
+//require dependencies
 const express = require('express');
-var cors = require('cors');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 3000
 const my_model = require('./model/my_model');
+const config = require('./config/config');
 
-var types = require('pg').types
-types.setTypeParser(20, parseInt);
-
+// EXPRESS
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }))
 
-app.use(express.static(__dirname + '/public'))
+// db postgresql
+var types = require('pg').types
+types.setTypeParser(20, parseInt);
+const { Client } = require('pg');
+const db = new Client(config.postgresql_connect);
 
-// Add headers
+// JWT
+// jwt middleware libs
+const jwt = require("jwt-simple");
+const passport = require("passport");
+//ใช้ในการ decode jwt ออกมา
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+//ใช้ในการประกาศ Strategy
+const JwtStrategy = require("passport-jwt").Strategy;
+
+//สร้าง Strategy
+const jwtOptions = {
+    jwtFromRequest: ExtractJwt.fromHeader("Authorization"),
+    secretOrKey: config.SECRET
+};
+const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
+
+    let sql = `SELECT us_id FROM vt_users WHERE us_username = $1`;
+    let data = [payload.sub];
+
+    db.connect()
+    db.query(sql, data)
+    .then(result => {
+        if (result.rows.length > 0) done(null, true);
+        else done(null, false);
+    })
+    .catch(e => {
+        console.error(e.stack)
+        res.json({ error: e })
+    })
+    .then(() => db.end())
+});
+//เสียบ Strategy เข้า Passport
+passport.use(jwtAuth);
+
+//ทำ Passport Middleware
+const requireJWTAuth = passport.authenticate("jwt", { session: false });
+
+//ทำ Middleware สำหรับขอ JWT
+const loginMiddleWare = (req, res, next) => {
+
+    let sql = ` SELECT us_id, ut_name_th, ut_name_en
+                FROM vt_users
+                LEFT JOIN vt_user_type ON ut_id = us_ut_id
+                WHERE us_username = $1 AND us_password = $2`;
+    let us_username = req.body.us_username;
+    let us_password = req.body.us_password;
+    let data = [us_username, us_password];
+
+    if(!us_username || !us_password) res.end();
+
+    console.log(`JWT -> call: loginMiddleWare [us_username = ${us_username}]`);
+    db.connect()
+    db.query(sql, data)
+    .then(result => {
+        if(result.rows.length > 0){
+            res.locals.user = result.rows[0]
+            next()
+        }
+        else res.json({ status: 1 })
+    })
+    .catch(e => {
+        console.error(e.stack)
+        res.json({ error: e })
+    })
+    .then(() => db.end())
+};
+// END JWT
+
+// CORS
 var corsOptions = {
     origin: ["https://bearhunt-vote.herokuapp.com", /localhost/, /bearhunt-vote.herokuapp.com/],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
@@ -25,40 +96,29 @@ var corsOptions = {
     credentials: true
 }
 app.use(cors(corsOptions))
-// app.use(function(req, res, next) {
-
-//     // Website you wish to allow to connect
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-
-//     // Request methods you wish to allow
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-//     // Request headers you wish to allow
-//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-//     // Set to true if you need the website to include cookies in the requests sent
-//     // to the API (e.g. in case you use sessions)
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-
-//     // Pass to next layer of middleware
-//     next();
-// });
+// END CORS
 
 //start Express server on defined port
 app.listen(PORT);
 
 //define a route, usually this would be a bunch of routes imported from another file
-app.get('/', function(req, res, next) {
+app.get('/', function (req, res, next) {
     res.send('Welcome to the BearHunt, Inc. API');
 });
 
 //log to console to let us know it's working
 console.log('BearHunt, Inc. API server started on: ' + PORT);
 
-app.post('/users/login', my_model.m_users.Users.check_login)
-app.post('/users/check', my_model.da_users.Users.can_vote)
-app.put('/users/logged_in', my_model.da_users.Users.update_login)
-app.get('/users/logs/:us_id', my_model.m_users.Users.get_logs)
+app.post('/users/login', loginMiddleWare, (req, res) => {
+    const payload = {
+        sub: res.locals.user.us_username,
+        iat: new Date().getTime()
+    };
+    res.json({ status: 0, user: res.locals.user , token: jwt.encode(payload, config.SECRET) })
+})
+app.post('/users/check', requireJWTAuth, my_model.da_users.Users.can_vote)
+app.put('/users/logged_in', requireJWTAuth, my_model.da_users.Users.update_login)
+app.get('/users/logs/:us_id', requireJWTAuth, my_model.m_users.Users.get_logs)
 
 app.get('/users', my_model.m_users.Users.get_all)
 app.get('/users/:us_id', my_model.da_users.Users.get_by_key)
@@ -98,8 +158,8 @@ app.get('/score', my_model.m_score.Score.get_score)
 app.put('/score', my_model.da_user_point_matching.UserPointMatching.update)
 app.get('/resetScore', my_model.da_score.Score.reset_all)
 
-app.get('/vote_time', my_model.m_vote_time.VoteTime.get_all)
-app.put('/vote_time', my_model.da_vote_time.VoteTime.update)
+app.get('/vote_time', requireJWTAuth, my_model.m_vote_time.VoteTime.get_all)
+app.put('/vote_time', requireJWTAuth, my_model.da_vote_time.VoteTime.update)
 
 // ------------- START scrum -------------------------
 
@@ -121,28 +181,23 @@ app.put('/scrum/events', my_model.da_event.Event.update)
 
 // ------------- END scrum ---------------------------
 
-app.get("/timesync", (req, res) => {
-
-    const config = require('./config/config.js')
-    // const mysql = require('mysql')
-    // const db = mysql.createConnection(config.mysql_connect)
-    const { Client } = require('pg');
-    const db = new Client(config.postgresql_connect);
-    db.connect();
+app.get("/timesync", requireJWTAuth, (req, res) => {
 
     //sql
     let sql = `SELECT NOW() AS now`;
 
     console.log(`timesync -> call now`)
 
-    var results = db.query(sql, function(err, results) {
-        //if error, print blank results
+    db.connect()
+    db.query(sql, function (err, results) {
+        db.end()
         if (err) {
             console.log(err);
             res.json({ "error": err });
         }
-
+        
         res.json(results.rows)
     })
+
 
 });
