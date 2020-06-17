@@ -53,6 +53,8 @@ var Systems = {
         let sys_name_en = req.body.sys_name_en;
         let data = [ sys_name_th, sys_name_en, sys_id ]
 
+        if(!sys_id) res.end();
+
         console.log(`call: update [sys_id = ${sys_id}]`);
 
         //query the DB using prepared statement
@@ -81,6 +83,8 @@ var Systems = {
         
         let ct_id = req.params.ct_id;
         let data = [ ct_id ]
+
+        if(!ct_id) res.end();
 
         console.log(`call: get_by_key [ ct_id = ${ct_id} ]`);
 
@@ -139,6 +143,8 @@ var Systems = {
 
         let sm_sys_id = req.params.sys_id;
         let data = [ sm_sys_id ]
+
+        if(!sys_id) res.end();
 
         console.log(`call: delete [sm_sys_id = ${sm_sys_id}]`);
 

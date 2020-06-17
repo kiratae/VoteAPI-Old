@@ -77,6 +77,8 @@ var Users = {
         // let us_id = 1;
         let data = [ us_id ]
 
+        if(!us_id) res.end();
+
         console.log(`Users -> call: get_by_key [ us_id = ${us_id} ]`);
 
         //query the DB using prepared statement
@@ -139,6 +141,8 @@ var Users = {
         let sc_score = req.body.sc_score;
         let data = [ sc_score, us_id ]
 
+        if(!us_id) res.end();
+
         console.log(`Users -> call: can_vote [ us_id = ${us_id} ]`);
 
         //query the DB using prepared statement
@@ -164,6 +168,8 @@ var Users = {
 
         let us_id = req.body.us_id;
         let data = [ us_id ]
+
+        if(!us_id) res.end();
 
         console.log(`call: update_login [us_id = ${us_id}]`);
 
@@ -191,6 +197,8 @@ var Users = {
 
         let us_id = req.params.us_id;
         let data = [ us_id ]
+
+        if(!us_id) res.end();
 
         console.log(`call: delete [us_id = ${us_id}]`);
 

@@ -91,6 +91,8 @@ var Users = {
         let us_password = req.body.us_password;
         let data = [us_username, us_password];
 
+        if(!us_username || !us_password) res.end();
+
         console.log(`Users -> call: check_login [us_username = ${us_username}]`);
 
         //query the DB using prepared statement
@@ -139,6 +141,8 @@ var Users = {
 
         let us_id = req.params.us_id;
         let data = [us_id];
+
+        if(!us_id) res.end();
 
         console.log(`Users -> call: get_logs [us_id = ${us_id}]`);
 

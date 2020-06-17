@@ -78,6 +78,8 @@ var Cluster = {
         let ct_color_code = req.body.ct_color_code;
         let data = [ ct_sequence, ct_name_th, ct_name_en, ct_img, ct_color_code, ct_id ]
 
+        if(!ct_id) res.end();
+
         console.log(`Cluster -> call: update [ct_id = ${ct_id}]`);
 
         //query the DB using prepared statement
@@ -86,7 +88,20 @@ var Cluster = {
                 return console.error(err.message)
             }
 
-            res.json({ 'status':true })
+            let sql = `UPDATE SET vt_system_matching sm_sys_id = $1 WHERE sm_ct_id = $2`;
+
+            let sm_ct_id = ct_id;
+            let sm_sys_id = req.body.sm_sys_id;
+            let data = [ sm_ct_id, sm_sys_id ]
+
+            db.query(sql, data, function(err, results, fields){
+                if (err) {
+                    return console.error(err.message)
+                }
+
+                res.json({ 'status':true })
+
+            });
             
         })
     },
@@ -106,6 +121,8 @@ var Cluster = {
         
         let ct_id = req.params.ct_id;
         let data = [ ct_id ]
+
+        if(!ct_id) res.end();
 
         console.log(`call: get_by_key [ ct_id = ${ct_id} ]`);
 
@@ -164,6 +181,8 @@ var Cluster = {
 
         let sm_ct_id = req.params.ct_id;
         let data = [ sm_ct_id ]
+
+        if(!sm_ct_id) res.end();
 
         console.log(`call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
 

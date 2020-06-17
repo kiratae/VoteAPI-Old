@@ -53,6 +53,8 @@ var UserType = {
         let ut_name_en = req.body.ut_name_en;
         let data = [ ut_name_th, ut_name_en, ut_id ]
 
+        if(!ut_id) res.end();
+
         console.log(`UserType -> call: update [ut_id = ${ut_id}]`);
 
         //query the DB using prepared statement
@@ -79,6 +81,8 @@ var UserType = {
         
         let ut_id = req.params.ut_id;
         let data = [ ut_id ]
+
+        if(!ut_id) res.end();
 
         console.log(`UserType -> call: get_by_key [ ut_id = ${ut_id} ]`);
 
@@ -137,6 +141,8 @@ var UserType = {
 
         let ut_id = req.params.ut_id;
         let data = [ ut_id ]
+
+        if(!ut_id) res.end();
 
         console.log(`UserType -> call: delete -> [ut_id = ${ut_id}]`);
 

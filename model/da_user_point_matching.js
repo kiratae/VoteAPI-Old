@@ -22,6 +22,8 @@ var UserPointMatching = {
         let sc_score = req.body.sc_score;
         let data = [ sc_score, us_id ]
 
+        if(!us_id) res.end();
+
         console.log(`UserPointMatching -> call: update [us_id = ${us_id}]`);
 
         //query the DB using prepared statement
@@ -63,6 +65,8 @@ var UserPointMatching = {
                     let us_id = req.body.us_id;
                     let sc_score = req.body.sc_score;
                     let data = [ sc_score, us_id ]
+
+                    if(!us_id) res.end();
 
                     console.log(`UserPointMatching -> call: vote [us_id = ${us_id}]`);
 
