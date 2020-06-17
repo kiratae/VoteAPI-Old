@@ -1,6 +1,7 @@
 #!/usr/bin/env node
  //require dependencies
 const express = require('express');
+var cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -17,24 +18,31 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(__dirname + '/public'))
 
 // Add headers
-app.use(function(req, res, next) {
+var corsOptions = {
+    origin: ["https://bearhunt-vote.herokuapp.com", /localhost/, /bearhunt-vote.herokuapp.com/],
+    methods: ['GET', 'PUT', 'POST', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true
+}
+app.use(cors(corsOptions))
+// app.use(function(req, res, next) {
 
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
+//     // Website you wish to allow to connect
+//     res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     // Request methods you wish to allow
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//     // Request headers you wish to allow
+//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
+//     // Set to true if you need the website to include cookies in the requests sent
+//     // to the API (e.g. in case you use sessions)
+//     res.setHeader('Access-Control-Allow-Credentials', true);
 
-    // Pass to next layer of middleware
-    next();
-});
+//     // Pass to next layer of middleware
+//     next();
+// });
 
 //start Express server on defined port
 app.listen(PORT);
@@ -134,11 +142,7 @@ app.get("/timesync", (req, res) => {
             res.json({ "error": err });
         }
 
-        console.log(results.rows);
-
         res.json(results.rows)
     })
-
-
 
 });
