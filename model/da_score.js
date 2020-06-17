@@ -182,18 +182,7 @@ var Score = {
         console.log(`Score(vt_voting_logs) -> call: reset_all`);
         const db = new Client(config.postgresql_connect);
         db.connect()
-
-        // db.query(sql, function(err) {
-        //     db.end()
-        //         //if error, print error results
-        //     if (err) {
-        //         console.log(err);
-        //         res.json({ "error": err });
-        //     }
-        //     res.json({ "reset": true });
-        // });
-
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ "reset": true });
             })

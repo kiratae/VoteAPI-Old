@@ -2,7 +2,6 @@ const config = require('../config/config.js')
 // const mysql = require('mysql')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var UserType = {
     get_all: function(req, res){
@@ -17,6 +16,7 @@ var UserType = {
 
         console.log(`UserType -> call: get_all *`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql)
             .then(result => {

@@ -2,7 +2,6 @@ const config = require('../config/config.js')
 // const mysql = require('mysql')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var Score = {
     get_score: (req, res)=>{
@@ -21,6 +20,7 @@ var Score = {
 
         console.log(`Score(vt_voting_logs) -> call: get_score`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql)
             .then(result => {

@@ -2,7 +2,6 @@ const config = require('../config/config.js')
     // const mysql = require('mysql')
     // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var UserType = {
     insert: (req, res) => {

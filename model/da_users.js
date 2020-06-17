@@ -2,7 +2,6 @@ const config = require('../config/config.js')
     // const mysql = require('mysql')
     // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var Users = {
     insert: (req, res) => {
@@ -22,6 +21,7 @@ var Users = {
 
         console.log(`Users -> call: insert [us_username = ${us_username}]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -85,6 +85,7 @@ var Users = {
 
         console.log(`Users -> call: get_by_key [ us_id = ${us_id} ]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -117,8 +118,9 @@ var Users = {
 
         console.log(`Users -> call: can_vote [ us_id = ${us_id} ]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
-        db.query(sql, dat)
+        db.query(sql, data)
             .then(result => res.json(result.rows[0]))
             .catch(e => {
                 console.error(e.stack)
@@ -137,6 +139,7 @@ var Users = {
 
         console.log(`Users -> call: update_login [us_id = ${us_id}]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -165,6 +168,7 @@ var Users = {
 
         console.log(`Users -> call: delete [us_id = ${us_id}]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {

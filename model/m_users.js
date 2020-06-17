@@ -2,7 +2,6 @@ const config = require('../config/config.js')
 // const mysql = require('mysql')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 const name = "Users";
 
@@ -28,8 +27,9 @@ var Users = {
 
         console.log(`Users -> call: get_all`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -62,6 +62,7 @@ var Users = {
 
         console.log(`Users -> call: check_login [us_username = ${us_username}]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -95,6 +96,7 @@ var Users = {
 
         console.log(`Users -> call: get_logs [us_id = ${us_id}]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {

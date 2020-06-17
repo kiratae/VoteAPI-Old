@@ -2,7 +2,6 @@ const config = require('../config/config.js')
 // const mysql = require('mysql')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var Cluster = {
     get_all: (req, res) => {
@@ -21,6 +20,7 @@ var Cluster = {
 
         console.log(`Cluster -> call: get_all`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql)
             .then(result => {
@@ -62,6 +62,7 @@ var Cluster = {
 
         console.log(`Cluster -> call: get_all_dashboard`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql)
             .then(result => {
@@ -99,6 +100,7 @@ var Cluster = {
 
         console.log(`Cluster -> call: get_all_leaderboard`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql)
             .then(result => {

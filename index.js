@@ -18,7 +18,6 @@ app.use(bodyParser.urlencoded({
 var types = require('pg').types
 types.setTypeParser(20, parseInt);
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 // JWT
 // jwt middleware libs
@@ -39,6 +38,7 @@ const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
     let sql = `SELECT us_id FROM vt_users WHERE us_username = $1`;
     let data = [payload.sub];
 
+    const db = new Client(config.postgresql_connect);
     db.connect()
     db.query(sql, data)
         .then(result => {
@@ -71,6 +71,8 @@ const loginMiddleWare = (req, res, next) => {
     if (!us_username || !us_password) res.end();
 
     console.log(`JWT -> call: loginMiddleWare [us_username = ${us_username}]`);
+    
+    const db = new Client(config.postgresql_connect);
     db.connect()
     db.query(sql, data)
         .then(result => {
@@ -188,6 +190,7 @@ app.get("/timesync", (req, res) => {
 
     console.log(`timesync -> call now`)
 
+    const db = new Client(config.postgresql_connect);
     db.connect()
     db.query(sql, data)
         .then(result => {

@@ -3,7 +3,6 @@ const config = require('../config/config.js');
 // const md5 = require('md5');
 // const db = mysql.createConnection(config.mysql_connect);
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var VotingLogs = {
     insert: (req, res) => {
@@ -22,7 +21,7 @@ var VotingLogs = {
         let sc_score = req.body.sc_score;
         let data = [sc_score, us_id];
 
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -78,6 +77,7 @@ var VotingLogs = {
 
         console.log(`VotingLogs -> call: delete [vl_id = ${vl_id}]`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {

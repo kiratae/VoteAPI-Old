@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
-    // const mysql = require('mysql')
-    // const db = mysql.createConnection(config.mysql_connect)
+// const mysql = require('mysql')
+// const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 var Systems = {
@@ -21,16 +21,6 @@ var Systems = {
         console.log(`Systems -> call: insert [sys_name_th = ${sys_name_th}]`);
         const db = new Client(config.postgresql_connect);
         db.connect()
-            // db.query(sql, data, function(err, results, fields) {
-            //     db.end()
-            //     if (err) {
-            //         return console.error(err.message)
-            //     }
-            //     // get inserted id
-            //     console.log(`sys_id: ${results.rows[0].sys_id}\n`)
-            //     res.json({ 'sys_id': results.rows[0].sys_id })
-            // });
-
         db.query(sql, data)
             .then(result => {
                 // get inserted id
@@ -67,16 +57,6 @@ var Systems = {
         console.log(`Systems -> call: update [sys_id = ${sys_id}]`);
         const db = new Client(config.postgresql_connect);
         db.connect()
-            // db.query(sql, data, function(err, results, fields){
-            //     db.end()
-            //     if (err) {
-            //         return console.error(err.message)
-            //     }
-
-        //     res.json({ 'status':true })
-
-        // });
-
         db.query(sql, data)
             .then(result => {
                 res.json({ 'status': true })
@@ -109,70 +89,9 @@ var Systems = {
         console.log(`Systems -> call: get_by_key [ ct_id = ${ct_id} ]`);
         const db = new Client(config.postgresql_connect);
         db.connect()
-            // db.query(sql, data, function(err, results, fields) {
-            //     db.end()
-            //         //if error, print blank results
-            //     if (err) {
-            //         // console.log(err);
-            //         var apiResult = {};
-
-        //         apiResult.meta = {
-        //                 table: section,
-        //                 type: "collection",
-        //                 total: 0
-        //             }
-        //             //create an empty data table
-        //         apiResult.data = [];
-
-        //         //send the results (apiResult) as JSON to Express (res)
-        //         //Express uses res.json() to send JSON to client
-        //         //you will see res.send() used for HTML
-        //         res.json(apiResult);
-
-        //     }
-
-        //     //make results 
-        //     var resultJson = JSON.stringify(results.rows);
-        //     resultJson = JSON.parse(resultJson);
-        //     var apiResult = {}
-
-        //     // create a meta table to help apps
-        //     //do we have results? what section? etc
-        //     apiResult.meta = {
-        //         table: section,
-        //         type: "collection",
-        //         total: 1,
-        //         total_entries: resultJson.length
-        //     }
-
-        //     //add our JSON results to the data table
-        //     apiResult.data = resultJson;
-
-        //     //send JSON to Express
-        //     res.json(apiResult)
-        // })
-
         db.query(sql, data)
             .then(result => {
-                //make results 
-                var resultJson = JSON.stringify(results.rows);
-                resultJson = JSON.parse(resultJson);
-                var apiResult = {}
-
-                // create a meta table to help apps
-                //do we have results? what section? etc
-                apiResult.meta = {
-                    table: section,
-                    type: "collection",
-                    total: 1,
-                    total_entries: resultJson.length
-                }
-
-                //add our JSON results to the data table
-                apiResult.data = resultJson;
-
-                //send JSON to Express
-                res.json(apiResult)
+                res.json({ status: 0, data: result.rows })
             })
             .catch(e => {
                 console.error(e.stack)
@@ -197,23 +116,23 @@ var Systems = {
         console.log(`Systems -> call: delete [sm_sys_id = ${sm_sys_id}]`);
         const db = new Client(config.postgresql_connect);
         db.connect()
-            // db.query(sql, data, function(err, results, fields) {
-            //     if (err) {
-            //         return console.error(err.message)
-            //     }
-            //     let sql = `DELETE FROM vt_systems WHERE sys_id = $1`;
-            //     let sys_id = req.params.sys_id;
-            //     let data = [sys_id]
-            //     console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
-            //     // query the DB using prepared statement
-            //     db.query(sql, data, function(err, results, fields) {
-            //         db.end()
-            //         if (err) {
-            //             return console.error(err.message)
-            //         }
-            //         res.end()
-            //     })
-            // })
+        // db.query(sql, data, function(err, results, fields) {
+        //     if (err) {
+        //         return console.error(err.message)
+        //     }
+        //     let sql = `DELETE FROM vt_systems WHERE sys_id = $1`;
+        //     let sys_id = req.params.sys_id;
+        //     let data = [sys_id]
+        //     console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
+        //     // query the DB using prepared statement
+        //     db.query(sql, data, function(err, results, fields) {
+        //         db.end()
+        //         if (err) {
+        //             return console.error(err.message)
+        //         }
+        //         res.end()
+        //     })
+        // })
 
         db.query(sql, data)
             .then(result => {
