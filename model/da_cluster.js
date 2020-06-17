@@ -232,27 +232,52 @@ var Cluster = {
         console.log(`Cluster -> call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
 
         db.connect()
-        db.query(sql, data, function(err, results, fields) {
-            db.end()
-            if (err) {
-                return console.error(err.message)
-            }
+            // db.query(sql, data, function(err, results, fields) {
+            //     db.end()
+            //     if (err) {
+            //         return console.error(err.message)
+            //     }
 
-            let sql = `DELETE FROM vt_cluster WHERE ct_id = $1`;
+        //     let sql = `DELETE FROM vt_cluster WHERE ct_id = $1`;
 
-            let ct_id = req.params.ct_id;
-            let data = [ct_id]
+        //     let ct_id = req.params.ct_id;
+        //     let data = [ct_id]
 
-            console.log(`call: delete vt_cluster [ct_id = ${ct_id}]`);
+        //     console.log(`call: delete vt_cluster [ct_id = ${ct_id}]`);
 
-            //query the DB using prepared statement
-            db.query(sql, data, function(err, results, fields) {
-                if (err) {
-                    return console.error(err.message)
-                }
-                res.end()
-            });
-        });
+        //     //query the DB using prepared statement
+        //     db.query(sql, data, function(err, results, fields) {
+        //         if (err) {
+        //             return console.error(err.message)
+        //         }
+        //         res.end()
+        //     });
+        // });
+
+        db.query(sql, data)
+            .then(result => {
+
+                let sql = `DELETE FROM vt_cluster WHERE ct_id = $1`;
+                let ct_id = req.params.ct_id;
+                let data = [ct_id]
+                console.log(`call: delete vt_cluster [ct_id = ${ct_id}]`);
+
+                db.query(sql, data)
+                    .then(result => {
+                        res.end()
+                    })
+                    .catch(e => {
+                        console.error(e.stack)
+                        res.json({ error: e.stack })
+                    })
+                    .then(() => db.end())
+
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
     },
 }

@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
-// const mysql = require('mysql')
-// const my_model = require('./my_model');
+    // const mysql = require('mysql')
+    // const my_model = require('./my_model');
 const md5 = require('md5');
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
@@ -32,7 +32,7 @@ var Score = {
         console.log(`call: insert [us_username = ${us_username}]`);
 
         //query the DB using prepared statement
-        db.query(sql, data, function (err, results, fields) {
+        db.query(sql, data, function(err, results, fields) {
             //if error, print error results
             if (err) {
                 console.log(err);
@@ -63,7 +63,7 @@ var Score = {
         console.log(`call: get_by_key`);
 
         //query the DB using prepared statement
-        var results = db.query(sql, data, function (err, results, fields) {
+        var results = db.query(sql, data, function(err, results, fields) {
             //if error, print error results
             if (err) {
                 console.log(err);
@@ -111,7 +111,7 @@ var Score = {
             console.log(`call: update [sc_ct_id = ${sc_ct_id}]`);
 
             //query the DB using prepared statement
-            db.query(sql, data, function (err) {
+            db.query(sql, data, function(err) {
                 //if error, print error results
                 if (err) {
                     console.log(err);
@@ -136,7 +136,7 @@ var Score = {
         let sc_score = req.body.sc_score;
         let data = [sc_id];
 
-        db.query(sql, data, function (err, results) {
+        db.query(sql, data, function(err, results) {
             //if error, print error results
             if (err) {
                 console.log(err);
@@ -156,7 +156,7 @@ var Score = {
                 console.log(`Score -> call: restore [sc_id = ${sc_id}, sc_score = ${sc_score}]`);
 
                 //query the DB using prepared statement
-                db.query(sql, data, function (err) {
+                db.query(sql, data, function(err) {
                     //if error, print error results
                     if (err) {
                         console.log(err);
@@ -183,16 +183,26 @@ var Score = {
         console.log(`Score(vt_voting_logs) -> call: reset_all`);
 
         db.connect()
-        db.query(sql, function (err) {
-            db.end()
-            //if error, print error results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
 
-            res.json({ "reset": true });
-        });
+        // db.query(sql, function(err) {
+        //     db.end()
+        //         //if error, print error results
+        //     if (err) {
+        //         console.log(err);
+        //         res.json({ "error": err });
+        //     }
+        //     res.json({ "reset": true });
+        // });
+
+        db.query(sql, data)
+            .then(result => {
+                res.json({ "reset": true });
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
     },
     delete: (req, res) => {
 

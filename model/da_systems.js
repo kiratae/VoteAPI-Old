@@ -22,17 +22,27 @@ var Systems = {
         console.log(`Systems -> call: insert [sys_name_th = ${sys_name_th}]`);
 
         db.connect()
-        db.query(sql, data, function(err, results, fields) {
-            db.end()
-            if (err) {
-                return console.error(err.message)
-            }
-            // get inserted id
-            console.log(`sys_id: ${results.rows[0].sys_id}\n`)
+            // db.query(sql, data, function(err, results, fields) {
+            //     db.end()
+            //     if (err) {
+            //         return console.error(err.message)
+            //     }
+            //     // get inserted id
+            //     console.log(`sys_id: ${results.rows[0].sys_id}\n`)
+            //     res.json({ 'sys_id': results.rows[0].sys_id })
+            // });
 
-            res.json({ 'sys_id': results.rows[0].sys_id })
-
-        });
+        db.query(sql, data)
+            .then(result => {
+                // get inserted id
+                console.log(`sys_id: ${results.rows[0].sys_id}\n`)
+                res.json({ 'sys_id': results.rows[0].sys_id })
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
     },
     update: (req, res) => {
@@ -100,48 +110,76 @@ var Systems = {
         console.log(`Systems -> call: get_by_key [ ct_id = ${ct_id} ]`);
 
         db.connect()
-        db.query(sql, data, function(err, results, fields) {
-            db.end()
-                //if error, print blank results
-            if (err) {
-                // console.log(err);
-                var apiResult = {};
+            // db.query(sql, data, function(err, results, fields) {
+            //     db.end()
+            //         //if error, print blank results
+            //     if (err) {
+            //         // console.log(err);
+            //         var apiResult = {};
 
+        //         apiResult.meta = {
+        //                 table: section,
+        //                 type: "collection",
+        //                 total: 0
+        //             }
+        //             //create an empty data table
+        //         apiResult.data = [];
+
+        //         //send the results (apiResult) as JSON to Express (res)
+        //         //Express uses res.json() to send JSON to client
+        //         //you will see res.send() used for HTML
+        //         res.json(apiResult);
+
+        //     }
+
+        //     //make results 
+        //     var resultJson = JSON.stringify(results.rows);
+        //     resultJson = JSON.parse(resultJson);
+        //     var apiResult = {}
+
+        //     // create a meta table to help apps
+        //     //do we have results? what section? etc
+        //     apiResult.meta = {
+        //         table: section,
+        //         type: "collection",
+        //         total: 1,
+        //         total_entries: resultJson.length
+        //     }
+
+        //     //add our JSON results to the data table
+        //     apiResult.data = resultJson;
+
+        //     //send JSON to Express
+        //     res.json(apiResult)
+        // })
+
+        db.query(sql, data)
+            .then(result => {
+                //make results 
+                var resultJson = JSON.stringify(results.rows);
+                resultJson = JSON.parse(resultJson);
+                var apiResult = {}
+
+                // create a meta table to help apps
+                //do we have results? what section? etc
                 apiResult.meta = {
-                        table: section,
-                        type: "collection",
-                        total: 0
-                    }
-                    //create an empty data table
-                apiResult.data = [];
+                    table: section,
+                    type: "collection",
+                    total: 1,
+                    total_entries: resultJson.length
+                }
 
-                //send the results (apiResult) as JSON to Express (res)
-                //Express uses res.json() to send JSON to client
-                //you will see res.send() used for HTML
-                res.json(apiResult);
+                //add our JSON results to the data table
+                apiResult.data = resultJson;
 
-            }
-
-            //make results 
-            var resultJson = JSON.stringify(results.rows);
-            resultJson = JSON.parse(resultJson);
-            var apiResult = {}
-
-            // create a meta table to help apps
-            //do we have results? what section? etc
-            apiResult.meta = {
-                table: section,
-                type: "collection",
-                total: 1,
-                total_entries: resultJson.length
-            }
-
-            //add our JSON results to the data table
-            apiResult.data = resultJson;
-
-            //send JSON to Express
-            res.json(apiResult)
-        })
+                //send JSON to Express
+                res.json(apiResult)
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
     },
     delete: (req, res) => {
         //grab the site section from the req variable (/strains/)
@@ -152,7 +190,6 @@ var Systems = {
 
         //sql
         let sql = `DELETE FROM vt_system_matching WHERE sm_sys_id = $1`;
-
         let sm_sys_id = req.params.sys_id;
         let data = [sm_sys_id]
 
@@ -165,7 +202,6 @@ var Systems = {
             if (err) {
                 return console.error(err.message)
             }
-
             let sql = `DELETE FROM vt_systems WHERE sys_id = $1`;
 
             let sys_id = req.params.sys_id;
@@ -174,13 +210,23 @@ var Systems = {
             console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
 
             //query the DB using prepared statement
-            db.query(sql, data, function(err, results, fields) {
-                db.end()
-                if (err) {
-                    return console.error(err.message)
-                }
-                res.end()
-            })
+            // db.query(sql, data, function(err, results, fields) {
+            //     db.end()
+            //     if (err) {
+            //         return console.error(err.message)
+            //     }
+            //     res.end()
+            // })
+
+            db.query(sql, data)
+                .then(result => {
+                    res.end()
+                })
+                .catch(e => {
+                    console.error(e.stack)
+                    res.json({ error: e.stack })
+                })
+                .then(() => db.end())
         })
     },
 }
