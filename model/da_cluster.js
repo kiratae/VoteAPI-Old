@@ -88,7 +88,7 @@ var Cluster = {
                 return console.error(err.message)
             }
 
-            let sql = `UPDATE SET vt_system_matching sm_sys_id = $1 WHERE sm_ct_id = $2`;
+            let sql = `UPDATE SET vt_system_matching SET sm_sys_id = $1 WHERE sm_ct_id = $2`;
 
             let sm_ct_id = ct_id;
             let sm_sys_id = req.body.sm_sys_id;
@@ -186,39 +186,25 @@ var Cluster = {
 
         console.log(`Cluster -> call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
 
-        //query the DB using prepared statement
+
         db.query(sql, data, function(err, results, fields){
             if (err) {
                 return console.error(err.message)
             }
-            
-            let sql = `DELETE FROM vt_score WHERE sc_ct_id = $1`;
+
+            let sql = `DELETE FROM vt_cluster WHERE ct_id = $1`;
 
             let ct_id = req.params.ct_id;
             let data = [ ct_id ]
 
-            console.log(`call: delete vt_score [sc_ct_id = ${ct_id}]`);
+            console.log(`call: delete vt_cluster [ct_id = ${ct_id}]`);
 
             //query the DB using prepared statement
             db.query(sql, data, function(err, results, fields){
                 if (err) {
                     return console.error(err.message)
                 }
-
-                let sql = `DELETE FROM vt_cluster WHERE ct_id = $1`;
-
-                let ct_id = req.params.ct_id;
-                let data = [ ct_id ]
-
-                console.log(`call: delete vt_cluster [ct_id = ${ct_id}]`);
-
-                //query the DB using prepared statement
-                db.query(sql, data, function(err, results, fields){
-                    if (err) {
-                        return console.error(err.message)
-                    }
-                    res.end()
-                });
+                res.end()
             });
         });
 
