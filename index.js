@@ -192,7 +192,7 @@ app.get("/timesync", (req, res) => {
 
     const db = new Client(config.postgresql_connect);
     db.connect()
-    db.query(sql, data)
+    db.query(sql)
         .then(result => {
             res.json(result.rows)
         })
