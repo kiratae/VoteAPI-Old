@@ -2,7 +2,6 @@ const config = require('../config/config.js')
 // const mysql = require('mysql')
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var Systems = {
     get_all: (req, res) => {
@@ -18,8 +17,9 @@ var Systems = {
 
         console.log(`Systems -> call: get_all`);
 
+        const db = new Client(config.postgresql_connect);
         db.connect()
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -27,7 +27,7 @@ var Systems = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .finally(() => db.end())
     }
 }
 

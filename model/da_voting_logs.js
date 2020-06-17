@@ -22,44 +22,45 @@ var VotingLogs = {
         let sc_score = req.body.sc_score;
         let data = [sc_score, us_id];
 
+
         db.connect()
-        db.query(sql, data, function (err, results) {
-            //if error, print error results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
+        db.query(sql, data)
+            .then(result => {
 
-            if (results.rows[0].can_vote) {
+                if (result.rows[0].can_vote) {
 
-                let sql = `INSERT INTO vt_voting_logs (vl_us_id, vl_ct_id, vl_points) VALUES ($1, $2, $3) RETURNING vl_id`;
+                    let sql = `INSERT INTO vt_voting_logs (vl_us_id, vl_ct_id, vl_points) VALUES ($1, $2, $3) RETURNING vl_id`;
 
-                let us_id = req.body.us_id;
-                let sc_score = req.body.sc_score;
-                let sc_ct_id = req.body.ct_id;
-                let data = [us_id, sc_ct_id, sc_score]
+                    let us_id = req.body.us_id;
+                    let sc_score = req.body.sc_score;
+                    let sc_ct_id = req.body.ct_id;
+                    let data = [us_id, sc_ct_id, sc_score]
 
-                console.log(`VotingLogs -> call: insert [us_id = ${us_id}]`);
+                    console.log(`VotingLogs -> call: insert [us_id = ${us_id}]`);
 
-                //query the DB using prepared statement
-                db.query(sql, data, function (err, vl_results) {
-                    db.end()
-                    if (err) {
-                        console.log(err);
-                        res.json({ "error": err });
-                    }
+                    db.query(sql, data)
+                        .then(result => {
+                            res.json({ "status": 0, "vl_id": vl_results.rows[0].vl_id });
+                        })
+                        .catch(e => {
+                            console.error(e.stack)
+                            res.json({ error: e.stack })
+                        })
+                        .then(() => db.end())
 
-                    res.json({ "status": 0, "vl_id": vl_results.rows[0].vl_id });
+                } else {
 
-                });
+                    res.json({ "status": 1 });
 
-            } else {
-                res.json({ "status": 1 });
-            }
-        });
-        // }else{
-        //     res.end();
-        // }
+                }
+
+
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
     },
     get_by_key: (req, res) => {
@@ -78,16 +79,16 @@ var VotingLogs = {
         console.log(`VotingLogs -> call: delete [vl_id = ${vl_id}]`);
 
         db.connect()
-        db.query(sql, data, function (err, results) {
-            db.end()
-            //if error, print error results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
+        db.query(sql, data)
+            .then(result => {
+                res.json({ "status": true });
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
-            res.json({ "status": true });
-        });
     },
 }
 

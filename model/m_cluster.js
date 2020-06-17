@@ -22,7 +22,7 @@ var Cluster = {
         console.log(`Cluster -> call: get_all`);
 
         db.connect()
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -63,7 +63,7 @@ var Cluster = {
         console.log(`Cluster -> call: get_all_dashboard`);
 
         db.connect()
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -100,7 +100,7 @@ var Cluster = {
         console.log(`Cluster -> call: get_all_leaderboard`);
 
         db.connect()
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })

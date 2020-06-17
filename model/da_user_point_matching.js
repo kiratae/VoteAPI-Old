@@ -25,68 +25,67 @@ var UserPointMatching = {
         console.log(`UserPointMatching -> call: update [us_id = ${us_id}]`);
 
         db.connect()
-        db.query(sql, data, function (err) {
-            db.end()
-            //if error, print error results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
-
-            res.end();
-        })
+        db.query(sql, data)
+            .then(result => {
+                res.end()
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
     },
-    vote: (req, res) => {
-        //check Hash
-        let us_id = req.body.us_id;
-        let data = [us_id]
+    // vote: (req, res) => {
+    //     //check Hash
+    //     let us_id = req.body.us_id;
+    //     let data = [us_id]
 
-        let sql = `SELECT um_points FROM vt_user_point_matching WHERE um_us_id = $1`;
+    //     let sql = `SELECT um_points FROM vt_user_point_matching WHERE um_us_id = $1`;
 
-        db.connect()
-        db.query(sql, data, function (err, results) {
-            //if error, print error results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
+    //     db.connect()
+    //     db.query(sql, data, function (err, results) {
+    //         //if error, print error results
+    //         if (err) {
+    //             console.log(err);
+    //             res.json({ "error": err });
+    //         }
 
-            let hasPoint = results.rows[0].um_points;
-            console.log(hasPoint);
+    //         let hasPoint = results.rows[0].um_points;
+    //         console.log(hasPoint);
 
-            let scoreToVote = req.body.sc_score;
+    //         let scoreToVote = req.body.sc_score;
 
-            if (hasPoint - scoreToVote >= 0) {
-                //sql
-                let sql = `UPDATE vt_user_point_matching SET um_points = um_points - $1 WHERE um_us_id = $2`;
+    //         if (hasPoint - scoreToVote >= 0) {
+    //             //sql
+    //             let sql = `UPDATE vt_user_point_matching SET um_points = um_points - $1 WHERE um_us_id = $2`;
 
-                let us_id = req.body.us_id;
-                let sc_score = req.body.sc_score;
-                let data = [sc_score, us_id]
+    //             let us_id = req.body.us_id;
+    //             let sc_score = req.body.sc_score;
+    //             let data = [sc_score, us_id]
 
-                if (!us_id) res.end();
+    //             if (!us_id) res.end();
 
-                console.log(`UserPointMatching -> call: vote [us_id = ${us_id}]`);
+    //             console.log(`UserPointMatching -> call: vote [us_id = ${us_id}]`);
 
-                db.query(sql, data, function (err) {
-                    db.end()
-                    //if error, print error results
-                    if (err) {
-                        console.log(err);
-                        res.json({ "error": err });
-                    }
+    //             db.query(sql, data, function (err) {
+    //                 db.end()
+    //                 //if error, print error results
+    //                 if (err) {
+    //                     console.log(err);
+    //                     res.json({ "error": err });
+    //                 }
 
-                    // my_model.da_voting_logs.VotingLogs.insert(req, res);
+    //                 // my_model.da_voting_logs.VotingLogs.insert(req, res);
 
-                    res.json({ "status": true });
-                });
-            } else {
-                res.json({ "status": false });
-            }
+    //                 res.json({ "status": true });
+    //             });
+    //         } else {
+    //             res.json({ "status": false });
+    //         }
 
-        });
+    //     });
 
-    },
+    // },
     restore: (req, res) => {
         //sql
         let sql = `UPDATE vt_user_point_matching SET um_points = um_points + $1 WHERE um_us_id = $2`;
@@ -98,18 +97,15 @@ var UserPointMatching = {
         console.log(`UserPointMatching -> call: restore [us_id = ${us_id}, sc_score = ${sc_score}]`);
 
         db.connect()
-        db.query(sql, data, function (err) {
-            db.end()
-            //if error, print error results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
-
-            res.json({ "status": true });
-
-            //my_model.da_score.Score.restore(req, res);
-        });
+        db.query(sql, data)
+            .then(result => {
+                res.json({ status: true });
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
     },
     delete: (req, res) => {

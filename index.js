@@ -49,7 +49,7 @@ const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
             console.error(e.stack)
             res.json({ error: e })
         })
-        .then(() => db.end())
+        .finally(() => db.end())
 });
 //เสียบ Strategy เข้า Passport
 passport.use(jwtAuth);
@@ -84,7 +84,7 @@ const loginMiddleWare = (req, res, next) => {
             console.error(e.stack)
             res.json({ error: e.stack })
         })
-        .then(() => db.end())
+        .finally(() => db.end())
 };
 // END JWT
 
@@ -158,8 +158,8 @@ app.get('/score', my_model.m_score.Score.get_score)
 app.put('/score', my_model.da_user_point_matching.UserPointMatching.update)
 app.get('/resetScore', my_model.da_score.Score.reset_all)
 
-app.get('/vote_time', requireJWTAuth, my_model.m_vote_time.VoteTime.get_all)
-app.put('/vote_time', requireJWTAuth, my_model.da_vote_time.VoteTime.update)
+app.get('/vote_time', my_model.m_vote_time.VoteTime.get_all)
+app.put('/vote_time', my_model.da_vote_time.VoteTime.update)
 
 // ------------- START scrum -------------------------
 
@@ -197,7 +197,6 @@ app.get("/timesync", (req, res) => {
             console.error(e.stack)
             res.json({ error: e.stack })
         })
-        .then(() => db.end())
-
+        .finally(() => db.end())
 
 });

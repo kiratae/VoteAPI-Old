@@ -94,7 +94,7 @@ var Users = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .finally(() => db.end())
     },
     can_vote: (req, res) => {
         //grab the site section from the req variable (/strains/)

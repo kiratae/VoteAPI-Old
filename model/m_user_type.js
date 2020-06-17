@@ -18,7 +18,7 @@ var UserType = {
         console.log(`UserType -> call: get_all *`);
 
         db.connect()
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })

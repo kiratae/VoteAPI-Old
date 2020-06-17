@@ -19,7 +19,7 @@ var VoteTime = {
         console.log(`VoteTime -> call: get_all *`);
 
         db.connect()
-        db.query(sql, data)
+        db.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -27,7 +27,7 @@ var VoteTime = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .finally(() => db.end())
     }
 }
 
