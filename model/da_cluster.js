@@ -2,7 +2,6 @@ const config = require('../config/config.js')
     // const mysql = require('mysql')
     // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var Cluster = {
     insert: (req, res) => {
@@ -25,6 +24,7 @@ var Cluster = {
         console.log(`Cluster -> call: insert [ct_name_th = ${ct_name_th}]`);
 
         //query the DB using prepared statement
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data, function(err, results, fields) {
             if (err) {
@@ -48,7 +48,7 @@ var Cluster = {
             //     console.log(`sm_id: ${sm_id}`)
             //     res.json({ 'sc_id': null, 'sm_ct_id': sm_ct_id, 'sm_id': sm_id })
             // });
-
+            const db = new Client(config.postgresql_connect);
             db.query(sql, data)
                 .then(result => {
                     let sm_id = results.rows[0].sm_id;
@@ -91,7 +91,7 @@ var Cluster = {
         if (!ct_id) res.end();
 
         console.log(`Cluster -> call: update [ct_id = ${ct_id}]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
             // db.query(sql, data, function(err, results, fields) {
             //     if (err) {
@@ -158,7 +158,7 @@ var Cluster = {
         if (!ct_id) res.end();
 
         console.log(`Cluster -> call: get_by_key [ ct_id = ${ct_id} ]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data, function(err, results, fields) {
             db.end()
@@ -230,7 +230,7 @@ var Cluster = {
         if (!sm_ct_id) res.end();
 
         console.log(`Cluster -> call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
             // db.query(sql, data, function(err, results, fields) {
             //     db.end()

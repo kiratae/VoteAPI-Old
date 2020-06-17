@@ -3,7 +3,6 @@ const config = require('../config/config.js');
 // const my_model = require('./my_model');
 // const db = mysql.createConnection(config.mysql_connect);
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 var UserPointMatching = {
     insert: (req, res) => {
@@ -23,7 +22,7 @@ var UserPointMatching = {
         if (!us_id) res.end();
 
         console.log(`UserPointMatching -> call: update [us_id = ${us_id}]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -95,7 +94,7 @@ var UserPointMatching = {
         let data = [sc_score, us_id];
 
         console.log(`UserPointMatching -> call: restore [us_id = ${us_id}, sc_score = ${sc_score}]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {

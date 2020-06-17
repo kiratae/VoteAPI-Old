@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
-// const mysql = require('mysql')
-// const db = mysql.createConnection(config.mysql_connect)
+    // const mysql = require('mysql')
+    // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
 
@@ -20,7 +20,7 @@ var UserType = {
         let data = [ut_name_th, ut_name_en]
 
         console.log(`UserType -> call: insert [ut_name_th = ${ut_name_th}]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -57,7 +57,7 @@ var UserType = {
         if (!ut_id) res.end();
 
         console.log(`UserType -> call: update [ut_id = ${ut_id}]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -68,7 +68,7 @@ var UserType = {
                 res.json({ error: e.stack })
             })
             .then(() => db.end())
-            
+
     },
     get_by_key: (req, res) => {
         //grab the site section from the req variable (/strains/)
@@ -88,7 +88,7 @@ var UserType = {
         if (!ut_id) res.end();
 
         console.log(`UserType -> call: get_by_key [ ut_id = ${ut_id} ]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {
@@ -117,7 +117,7 @@ var UserType = {
         if (!ut_id) res.end();
 
         console.log(`UserType -> call: delete -> [ut_id = ${ut_id}]`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
             .then(result => {

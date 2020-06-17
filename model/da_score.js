@@ -4,7 +4,6 @@ const config = require('../config/config.js')
 const md5 = require('md5');
 // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
-const db = new Client(config.postgresql_connect);
 
 /*
 ❌❌❌❌❌❌❌❌❌❌❌❌❌
@@ -181,7 +180,7 @@ var Score = {
         let sql = `DELETE FROM vt_voting_logs`;
 
         console.log(`Score(vt_voting_logs) -> call: reset_all`);
-
+        const db = new Client(config.postgresql_connect);
         db.connect()
 
         // db.query(sql, function(err) {
