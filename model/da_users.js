@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
-// const mysql = require('mysql')
-// const db = mysql.createConnection(config.mysql_connect)
+    // const mysql = require('mysql')
+    // const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 const db = new Client(config.postgresql_connect);
 
@@ -45,14 +45,14 @@ var Users = {
                     })
                     .catch(e => {
                         console.error(e.stack)
-                        res.json({ error: e })
+                        res.json({ error: e.stack })
                     })
                     .then(() => db.end())
 
             })
             .catch(e => {
                 console.error(e.stack)
-                res.json({ error: e })
+                res.json({ error: e.stack })
             })
             .then(() => db.end())
 
@@ -92,7 +92,7 @@ var Users = {
             })
             .catch(e => {
                 console.error(e.stack)
-                res.json({ error: e })
+                res.json({ error: e.stack })
             })
             .then(() => db.end())
     },
@@ -122,7 +122,7 @@ var Users = {
             .then(result => res.json(result.rows[0]))
             .catch(e => {
                 console.error(e.stack)
-                res.json({ error: e })
+                res.json({ error: e.stack })
             })
             .then(() => db.end())
     },
@@ -144,7 +144,7 @@ var Users = {
             })
             .catch(e => {
                 console.error(e.stack)
-                res.json({ error: e })
+                res.json({ error: e.stack })
             })
             .then(() => db.end())
     },
@@ -181,14 +181,14 @@ var Users = {
                     })
                     .catch(e => {
                         console.error(e.stack)
-                        res.json({ error: e })
+                        res.json({ error: e.stack })
                     })
                     .then(() => db.end())
 
             })
             .catch(e => {
                 console.error(e.stack)
-                res.json({ error: e })
+                res.json({ error: e.stack })
             })
             .then(() => db.end())
     },
