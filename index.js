@@ -41,15 +41,15 @@ const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
 
     db.connect()
     db.query(sql, data)
-    .then(result => {
-        if (result.rows.length > 0) done(null, true);
-        else done(null, false);
-    })
-    .catch(e => {
-        console.error(e.stack)
-        res.json({ error: e })
-    })
-    .then(() => db.end())
+        .then(result => {
+            if (result.rows.length > 0) done(null, true);
+            else done(null, false);
+        })
+        .catch(e => {
+            console.error(e.stack)
+            res.json({ error: e })
+        })
+        .then(() => db.end())
 });
 //เสียบ Strategy เข้า Passport
 passport.use(jwtAuth);
@@ -68,23 +68,23 @@ const loginMiddleWare = (req, res, next) => {
     let us_password = req.body.us_password;
     let data = [us_username, us_password];
 
-    if(!us_username || !us_password) res.end();
+    if (!us_username || !us_password) res.end();
 
     console.log(`JWT -> call: loginMiddleWare [us_username = ${us_username}]`);
     db.connect()
     db.query(sql, data)
-    .then(result => {
-        if(result.rows.length > 0){
-            res.locals.user = result.rows[0]
-            next()
-        }
-        else res.json({ status: 1 })
-    })
-    .catch(e => {
-        console.error(e.stack)
-        res.json({ error: e })
-    })
-    .then(() => db.end())
+        .then(result => {
+            if (result.rows.length > 0) {
+                res.locals.user = result.rows[0]
+                next()
+            }
+            else res.json({ status: 1 })
+        })
+        .catch(e => {
+            console.error(e.stack)
+            res.json({ error: e.stack })
+        })
+        .then(() => db.end())
 };
 // END JWT
 
@@ -114,11 +114,11 @@ app.post('/users/login', loginMiddleWare, (req, res) => {
         sub: res.locals.user.us_username,
         iat: new Date().getTime()
     };
-    res.json({ status: 0, user: res.locals.user , token: jwt.encode(payload, config.SECRET) })
+    res.json({ status: 0, user: res.locals.user, token: jwt.encode(payload, config.SECRET) })
 })
-app.post('/users/check', requireJWTAuth, my_model.da_users.Users.can_vote)
-app.put('/users/logged_in', requireJWTAuth, my_model.da_users.Users.update_login)
-app.get('/users/logs/:us_id', requireJWTAuth, my_model.m_users.Users.get_logs)
+app.post('/users/check', my_model.da_users.Users.can_vote)
+app.put('/users/logged_in', my_model.da_users.Users.update_login)
+app.get('/users/logs/:us_id', my_model.m_users.Users.get_logs)
 
 app.get('/users', my_model.m_users.Users.get_all)
 app.get('/users/:us_id', my_model.da_users.Users.get_by_key)
@@ -181,7 +181,7 @@ app.put('/scrum/events', my_model.da_event.Event.update)
 
 // ------------- END scrum ---------------------------
 
-app.get("/timesync", requireJWTAuth, (req, res) => {
+app.get("/timesync", (req, res) => {
 
     //sql
     let sql = `SELECT NOW() AS now`;
@@ -189,15 +189,15 @@ app.get("/timesync", requireJWTAuth, (req, res) => {
     console.log(`timesync -> call now`)
 
     db.connect()
-    db.query(sql, function (err, results) {
-        db.end()
-        if (err) {
-            console.log(err);
-            res.json({ "error": err });
-        }
-        
-        res.json(results.rows)
-    })
+    db.query(sql, data)
+        .then(result => {
+            res.json(result.rows)
+        })
+        .catch(e => {
+            console.error(e.stack)
+            res.json({ error: e.stack })
+        })
+        .then(() => db.end())
 
 
 });

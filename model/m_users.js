@@ -28,50 +28,16 @@ var Users = {
 
         console.log(`Users -> call: get_all`);
 
-        //query the DB using prepared statement
         db.connect()
-        db.query(sql, function (err, results, fields) {
-            db.end()
-            //if error, print blank results
-            if (err) {
-                // console.log(err);
-                var apiResult = {};
-
-                apiResult.meta = {
-                    table: section,
-                    type: "collection",
-                    total: 0
-                }
-                //create an empty data table
-                apiResult.data = [];
-
-                //send the results (apiResult) as JSON to Express (res)
-                //Express uses res.json() to send JSON to client
-                //you will see res.send() used for HTML
-                res.json(apiResult);
-
-            }
-
-            //make results 
-            var resultJson = JSON.stringify(results.rows);
-            resultJson = JSON.parse(resultJson);
-            var apiResult = {}
-
-            // create a meta table to help apps
-            //do we have results? what section? etc
-            apiResult.meta = {
-                table: section,
-                type: "collection",
-                total: 1,
-                total_entries: resultJson.length
-            }
-
-            //add our JSON results to the data table
-            apiResult.data = resultJson;
-
-            //send JSON to Express
-            res.json(apiResult)
-        })
+        db.query(sql, data)
+            .then(result => {
+                res.json({ status: 0, data: result.rows })
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
     },
     check_login: async (req, res) => {
@@ -92,40 +58,21 @@ var Users = {
         let us_password = req.body.us_password;
         let data = [us_username, us_password];
 
-        if(!us_username || !us_password) res.end();
+        if (!us_username || !us_password) res.end();
 
         console.log(`Users -> call: check_login [us_username = ${us_username}]`);
 
-        //query the DB using prepared statement
         db.connect()
-        db.query(sql, data, function (err, results, fields) {
-            db.end()
-            //if error, print blank results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
+        db.query(sql, data)
+            .then(result => {
+                res.json({ status: 0, data: result.rows })
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
-            //make results 
-            var resultJson = JSON.stringify(results.rows);
-            resultJson = JSON.parse(resultJson);
-            var apiResult = {}
-
-            // create a meta table to help apps
-            //do we have results? what section? etc
-            apiResult.meta = {
-                table: section,
-                type: "collection",
-                total: 1,
-                total_entries: resultJson.length
-            }
-
-            //add our JSON results to the data table
-            apiResult.data = resultJson;
-            
-            //send JSON to Express
-            res.json(apiResult)
-        });
     },
     get_logs: (req, res) => {
 
@@ -144,40 +91,20 @@ var Users = {
         let us_id = req.params.us_id;
         let data = [us_id];
 
-        if(!us_id) res.end();
+        if (!us_id) res.end();
 
         console.log(`Users -> call: get_logs [us_id = ${us_id}]`);
 
-        //query the DB using prepared statement
         db.connect()
-        db.query(sql, data, function (err, results, fields) {
-            db.end()
-            //if error, print blank results
-            if (err) {
-                console.log(err);
-                res.json({ "error": err });
-            }
-
-            //make results 
-            var resultJson = JSON.stringify(results.rows);
-            resultJson = JSON.parse(resultJson);
-            var apiResult = {}
-
-            // create a meta table to help apps
-            //do we have results? what section? etc
-            apiResult.meta = {
-                table: section,
-                type: "collection",
-                total: 1,
-                total_entries: resultJson.length
-            }
-
-            //add our JSON results to the data table
-            apiResult.data = resultJson;
-
-            //send JSON to Express
-            res.json(apiResult)
-        })
+        db.query(sql, data)
+            .then(result => {
+                res.json({ status: 0, data: result.rows })
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
     }
 }
 

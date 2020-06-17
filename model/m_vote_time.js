@@ -20,14 +20,14 @@ var VoteTime = {
 
         db.connect()
         db.query(sql, data)
-        .then(result => {
-            res.json({ status: 1, data: result.rows })
-        })
-        .catch(e => {
-            console.error(e.stack)
-            res.json({ error: e })
-        })
-        .then(() => db.end())
+            .then(result => {
+                res.json({ status: 0, data: result.rows })
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
     }
 }
 
