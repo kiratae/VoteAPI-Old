@@ -160,7 +160,7 @@ var Users = {
         let section = pathname[1];
 
         //sql
-        let sql = `UPDATE vt_users SET us_lastlogin = CURRENT_TIMESTAMP WHERE  us_id = $1`;
+        let sql = `UPDATE vt_users SET us_lastlogin = CURRENT_TIMESTAMP WHERE us_id = $1`;
 
         let us_id = req.body.us_id;
         let data = [ us_id ]
