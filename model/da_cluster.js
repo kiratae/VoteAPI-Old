@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
-    // const mysql = require('mysql')
-    // const db = mysql.createConnection(config.mysql_connect)
+// const mysql = require('mysql')
+// const db = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 var Cluster = {
@@ -23,36 +23,36 @@ var Cluster = {
 
         console.log(`Cluster -> call: insert [ct_name_th = ${ct_name_th}]`);
 
-        //query the DB using prepared statement
         const db = new Client(config.postgresql_connect);
         db.connect()
-        db.query(sql, data, function(err, results, fields) {
-            if (err) {
-                return console.error(err.message)
-            }
-            // get inserted id
-            console.log(`ct_id: ${results.rows[0].ct_id}`)
+        db.query(sql, data)
+            .then(result => {
+                // get inserted id
+                console.log(`ct_id: ${result.rows[0].ct_id}`)
 
-            let sql = `INSERT INTO vt_system_matching (sm_ct_id, sm_sys_id) VALUES ($1, $2) RETURNING sm_id`;
+                let sql = `INSERT INTO vt_system_matching (sm_ct_id, sm_sys_id) VALUES ($1, $2) RETURNING sm_id`;
 
-            let sm_ct_id = results.rows[0].ct_id;
-            let sm_sys_id = req.body.sm_sys_id;
-            let data = [sm_ct_id, sm_sys_id]
-
-            const db = new Client(config.postgresql_connect);
-            db.query(sql, data)
-                .then(result => {
-                    let sm_id = results.rows[0].sm_id;
-                    console.log(`sm_id: ${sm_id}`)
-                    res.json({ 'sc_id': null, 'sm_ct_id': sm_ct_id, 'sm_id': sm_id })
-                })
-                .catch(e => {
-                    console.error(e.stack)
-                    res.json({ error: e.stack })
-                })
-                .then(() => db.end())
-
-        });
+                let sm_ct_id = result.rows[0].ct_id;
+                let sm_sys_id = req.body.sm_sys_id;
+                let data = [sm_ct_id, sm_sys_id]
+                
+                db.query(sql, data)
+                    .then(result => {
+                        let sm_id = result.rows[0].sm_id;
+                        console.log(`sm_id: ${sm_id}`)
+                        res.json({ 'sc_id': null, 'sm_ct_id': sm_ct_id, 'sm_id': sm_id })
+                    })
+                    .catch(e => {
+                        console.error(e.stack)
+                        res.json({ error: e.stack })
+                    })
+                    .then(() => db.end())
+            })
+            .catch(e => {
+                console.error(e.stack)
+                res.json({ error: e.stack })
+            })
+            .then(() => db.end())
 
     },
     update: (req, res) => {
@@ -85,7 +85,7 @@ var Cluster = {
         const db = new Client(config.postgresql_connect);
         db.connect()
         db.query(sql, data)
-            .then(results => {
+            .then(result => {
                 let sql = `UPDATE vt_system_matching SET sm_sys_id = $1 WHERE sm_ct_id = $2`;
                 let sm_ct_id = ct_id;
                 let sm_sys_id = req.body.sm_sys_id;

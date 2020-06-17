@@ -24,8 +24,8 @@ var Systems = {
         db.query(sql, data)
             .then(result => {
                 // get inserted id
-                console.log(`sys_id: ${results.rows[0].sys_id}\n`)
-                res.json({ 'sys_id': results.rows[0].sys_id })
+                console.log(`sys_id: ${result.rows[0].sys_id}\n`)
+                res.json({ 'sys_id': result.rows[0].sys_id })
             })
             .catch(e => {
                 console.error(e.stack)
@@ -116,24 +116,6 @@ var Systems = {
         console.log(`Systems -> call: delete [sm_sys_id = ${sm_sys_id}]`);
         const db = new Client(config.postgresql_connect);
         db.connect()
-        // db.query(sql, data, function(err, results, fields) {
-        //     if (err) {
-        //         return console.error(err.message)
-        //     }
-        //     let sql = `DELETE FROM vt_systems WHERE sys_id = $1`;
-        //     let sys_id = req.params.sys_id;
-        //     let data = [sys_id]
-        //     console.log(`Systems -> call: delete [sys_id = ${sys_id}]`);
-        //     // query the DB using prepared statement
-        //     db.query(sql, data, function(err, results, fields) {
-        //         db.end()
-        //         if (err) {
-        //             return console.error(err.message)
-        //         }
-        //         res.end()
-        //     })
-        // })
-
         db.query(sql, data)
             .then(result => {
 
