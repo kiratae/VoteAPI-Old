@@ -88,7 +88,7 @@ var Cluster = {
                 return console.error(err.message)
             }
 
-            let sql = `UPDATE SET vt_system_matching SET sm_sys_id = $1 WHERE sm_ct_id = $2`;
+            let sql = `UPDATE vt_system_matching SET sm_sys_id = $1 WHERE sm_ct_id = $2`;
 
             let sm_ct_id = ct_id;
             let sm_sys_id = req.body.sm_sys_id;
