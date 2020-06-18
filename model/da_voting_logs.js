@@ -55,7 +55,7 @@ var VotingLogs = {
     
                             res.json({ "status": 0, "vl_id": result.rows[0].vl_id })
     
-                            client.query('COMIT', err => {
+                            client.query('COMMIT', err => {
                                 if (err) console.error('Error committing transaction', err.stack)
                                 done()
                             })

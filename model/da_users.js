@@ -49,7 +49,7 @@ var Users = {
                         console.log(`um_id: ${result.rows[0].um_id}`)
                         res.json({ "um_id": result.rows[0].um_id })
 
-                        client.query('COMIT', err => {
+                        client.query('COMMIT', err => {
                             if (err) console.error('Error committing transaction', err.stack)
                             done()
                         })
