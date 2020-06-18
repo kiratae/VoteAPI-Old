@@ -2,7 +2,7 @@ const config = require('../config/config.js')
     // const mysql = require('mysql')
     // const my_model = require('./my_model');
 const md5 = require('md5');
-// const db = mysql.createConnection(config.mysql_connect)
+// const client = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 /*
@@ -30,8 +30,8 @@ var Score = {
 
         console.log(`call: insert [us_username = ${us_username}]`);
 
-        //query the DB using prepared statement
-        db.query(sql, data, function(err, results, fields) {
+        //query the client using prepared statement
+        client.query(sql, data, function(err, results, fields) {
             //if error, print error results
             if (err) {
                 console.log(err);
@@ -61,8 +61,8 @@ var Score = {
 
         console.log(`call: get_by_key`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, data, function(err, results, fields) {
+        //query the client using prepared statement
+        var results = client.query(sql, data, function(err, results, fields) {
             //if error, print error results
             if (err) {
                 console.log(err);
@@ -109,8 +109,8 @@ var Score = {
 
             console.log(`call: update [sc_ct_id = ${sc_ct_id}]`);
 
-            //query the DB using prepared statement
-            db.query(sql, data, function(err) {
+            //query the client using prepared statement
+            client.query(sql, data, function(err) {
                 //if error, print error results
                 if (err) {
                     console.log(err);
@@ -135,7 +135,7 @@ var Score = {
         let sc_score = req.body.sc_score;
         let data = [sc_id];
 
-        db.query(sql, data, function(err, results) {
+        client.query(sql, data, function(err, results) {
             //if error, print error results
             if (err) {
                 console.log(err);
@@ -154,8 +154,8 @@ var Score = {
 
                 console.log(`Score -> call: restore [sc_id = ${sc_id}, sc_score = ${sc_score}]`);
 
-                //query the DB using prepared statement
-                db.query(sql, data, function(err) {
+                //query the client using prepared statement
+                client.query(sql, data, function(err) {
                     //if error, print error results
                     if (err) {
                         console.log(err);
@@ -180,9 +180,9 @@ var Score = {
         let sql = `DELETE FROM vt_voting_logs`;
 
         console.log(`Score(vt_voting_logs) -> call: reset_all`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql)
             .then(result => {
                 res.json({ "reset": true });
             })
@@ -190,7 +190,7 @@ var Score = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     },
     delete: (req, res) => {
 

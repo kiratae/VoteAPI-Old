@@ -1,6 +1,6 @@
 const config = require('../../config/config.js')
 const mysql = require('mysql')
-const db = mysql.createConnection(config.mysql_connect)
+const client = mysql.createConnection(config.mysql_connect)
 
 var Event = {
     insert: (req, res) => {
@@ -14,8 +14,8 @@ var Event = {
 
         console.log(`[scrum] Event -> call: insert [se_name = ${se_name}]`);
 
-        //query the DB using prepared statement
-        db.query(sql, data, function(err, results, fields){
+        //query the client using prepared statement
+        client.query(sql, data, function(err, results, fields){
             if (err) {
                 return console.error(err.message)
             }
@@ -43,8 +43,8 @@ var Event = {
 
         console.log(`[scrum] Event -> call: update [se_id = ${se_id}]`);
 
-        //query the DB using prepared statement
-        db.query(sql, data, function(err, results, fields){
+        //query the client using prepared statement
+        client.query(sql, data, function(err, results, fields){
             if (err) {
                 return console.error(err.message)
             }
@@ -64,8 +64,8 @@ var Event = {
 
         console.log(`[scrum] Event -> call: get_by_key [ se_id = ${se_id} ]`);
 
-        //query the DB using prepared statement
-        db.query(sql, data, function(err, results, fields){
+        //query the client using prepared statement
+        client.query(sql, data, function(err, results, fields){
             if (err) {
                 console.log(err);
                 res.json({ 'error':err })

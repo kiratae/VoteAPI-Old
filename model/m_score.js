@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
 // const mysql = require('mysql')
-// const db = mysql.createConnection(config.mysql_connect)
+// const client = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 var Score = {
@@ -20,9 +20,9 @@ var Score = {
 
         console.log(`Score(vt_voting_logs) -> call: get_score`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -30,7 +30,7 @@ var Score = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .finally(() => db.end())
+            .finally(() => client.end())
 
     }
 }

@@ -1,15 +1,15 @@
 const config = require('../config/config.js');
 // const mysql = require('mysql');
 // const my_model = require('./my_model');
-// const db = mysql.createConnection(config.mysql_connect);
+// const client = mysql.createConnection(config.mysql_connect);
 const { Client } = require('pg');
 
 var UserPointMatching = {
     insert: (req, res) => {
-        // to do insert to db
+        // to do insert to client
     },
     get_by_key: (req, res) => {
-        // to do get_by_key from db
+        // to do get_by_key from client
     },
     update: (req, res) => {
         //sql
@@ -22,9 +22,9 @@ var UserPointMatching = {
         if (!us_id) res.end();
 
         console.log(`UserPointMatching -> call: update [us_id = ${us_id}]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.end()
             })
@@ -32,7 +32,7 @@ var UserPointMatching = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     },
     // vote: (req, res) => {
     //     //check Hash
@@ -41,8 +41,8 @@ var UserPointMatching = {
 
     //     let sql = `SELECT um_points FROM vt_user_point_matching WHERE um_us_id = $1`;
 
-    //     db.connect()
-    //     db.query(sql, data, function (err, results) {
+    //     client.connect()
+    //     client.query(sql, data, function (err, results) {
     //         //if error, print error results
     //         if (err) {
     //             console.log(err);
@@ -66,8 +66,8 @@ var UserPointMatching = {
 
     //             console.log(`UserPointMatching -> call: vote [us_id = ${us_id}]`);
 
-    //             db.query(sql, data, function (err) {
-    //                 db.end()
+    //             client.query(sql, data, function (err) {
+    //                 client.end()
     //                 //if error, print error results
     //                 if (err) {
     //                     console.log(err);
@@ -94,9 +94,9 @@ var UserPointMatching = {
         let data = [sc_score, us_id];
 
         console.log(`UserPointMatching -> call: restore [us_id = ${us_id}, sc_score = ${sc_score}]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.json({ status: true });
             })
@@ -104,11 +104,11 @@ var UserPointMatching = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
     delete: (req, res) => {
-        // to do delete from db
+        // to do delete from client
     },
 }
 

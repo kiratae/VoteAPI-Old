@@ -1,6 +1,6 @@
 const config = require('../../config/config.js')
 const mysql = require('mysql')
-const db = mysql.createConnection(config.mysql_connect)
+const client = mysql.createConnection(config.mysql_connect)
 
 var Log = {
     insert: (req, res) => {
@@ -13,8 +13,8 @@ var Log = {
 
         console.log(`[scrum] Event -> call: insert [sl_ct_id = ${sl_ct_id}, sl_se_id = ${sl_se_id}]`);
 
-        //query the DB using prepared statement
-        db.query(sql, data, function(err, results, fields){
+        //query the client using prepared statement
+        client.query(sql, data, function(err, results, fields){
             if (err) {
                 return console.error(err.message)
             }

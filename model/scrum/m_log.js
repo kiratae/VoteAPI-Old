@@ -1,6 +1,6 @@
 const config = require('../../config/config.js')
 const mysql = require('mysql')
-const db = mysql.createConnection(config.mysql_connect)
+const client = mysql.createConnection(config.mysql_connect)
 
 var Log = {
     get_all: function(req, res){
@@ -18,8 +18,8 @@ var Log = {
 
         //console.log(`call: get_all [us_username = ${us_username}]`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -124,8 +124,8 @@ var Log = {
         let time = req.body.time;
         let data = [ time, time, time, time, time, time ]
 
-        //query the DB using prepared statement
-        var results = db.query(sql, data,function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, data,function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -185,8 +185,8 @@ var Log = {
 
         //console.log(`call: get_all [us_username = ${us_username}]`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -247,8 +247,8 @@ var Log = {
 
         //console.log(`call: get_all [us_username = ${us_username}]`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -309,8 +309,8 @@ var Log = {
 
         //console.log(`call: get_all [us_username = ${us_username}]`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);

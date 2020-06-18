@@ -1,6 +1,6 @@
 const config = require('../../config/config.js')
 const mysql = require('mysql')
-const db = mysql.createConnection(config.mysql_connect)
+const client = mysql.createConnection(config.mysql_connect)
 
 var Event = {
     get_all: function(req, res){
@@ -15,8 +15,8 @@ var Event = {
 
         //console.log(`call: get_all [us_username = ${us_username}]`);
 
-        //query the DB using prepared statement
-        var results = db.query(sql, function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -74,8 +74,8 @@ var Event = {
         let se_name = req.body.se_name;
         let data = [ se_name ]
 
-        //query the DB using prepared statement
-        var results = db.query(sql, data, function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, data, function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);
@@ -134,8 +134,8 @@ var Event = {
         let ct_id = req.body.ct_id;
         let data = [ ct_id ]
 
-        //query the DB using prepared statement
-        var results = db.query(sql, data, function(err, results, fields){
+        //query the client using prepared statement
+        var results = client.query(sql, data, function(err, results, fields){
             //if error, print blank results
             if (err) {
                 // console.log(err);

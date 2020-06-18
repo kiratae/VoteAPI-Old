@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
 // const mysql = require('mysql')
-// const db = mysql.createConnection(config.mysql_connect)
+// const client = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 var Cluster = {
@@ -23,9 +23,9 @@ var Cluster = {
 
         console.log(`Cluster -> call: insert [ct_name_th = ${ct_name_th}]`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 // get inserted id
                 console.log(`ct_id: ${result.rows[0].ct_id}`)
@@ -36,7 +36,7 @@ var Cluster = {
                 let sm_sys_id = req.body.sm_sys_id;
                 let data = [sm_ct_id, sm_sys_id]
                 
-                db.query(sql, data)
+                client.query(sql, data)
                     .then(result => {
                         let sm_id = result.rows[0].sm_id;
                         console.log(`sm_id: ${sm_id}`)
@@ -46,13 +46,13 @@ var Cluster = {
                         console.error(e.stack)
                         res.json({ error: e.stack })
                     })
-                    .then(() => db.end())
+                    .then(() => client.end())
             })
             .catch(e => {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
     update: (req, res) => {
@@ -82,16 +82,16 @@ var Cluster = {
         if (!ct_id) res.end();
 
         console.log(`Cluster -> call: update [ct_id = ${ct_id}]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 let sql = `UPDATE vt_system_matching SET sm_sys_id = $1 WHERE sm_ct_id = $2`;
                 let sm_ct_id = ct_id;
                 let sm_sys_id = req.body.sm_sys_id;
                 let data = [sm_sys_id, sm_ct_id]
 
-                db.query(sql, data)
+                client.query(sql, data)
                     .then(result => {
                         res.json({ 'status': true })
                     })
@@ -99,13 +99,13 @@ var Cluster = {
                         console.error(e.stack)
                         res.json({ error: e.stack })
                     })
-                    .then(() => db.end())
+                    .then(() => client.end())
             })
             .catch(e => {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
     get_by_key: (req, res) => {
@@ -128,9 +128,9 @@ var Cluster = {
         if (!ct_id) res.end();
 
         console.log(`Cluster -> call: get_by_key [ ct_id = ${ct_id} ]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -138,7 +138,7 @@ var Cluster = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
     delete: (req, res) => {
@@ -157,9 +157,9 @@ var Cluster = {
         if (!sm_ct_id) res.end();
 
         console.log(`Cluster -> call: delete vt_system_matching [sm_ct_id = ${sm_ct_id}]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
 
                 let sql = `DELETE FROM vt_cluster WHERE ct_id = $1`;
@@ -167,7 +167,7 @@ var Cluster = {
                 let data = [ct_id]
                 console.log(`call: delete vt_cluster [ct_id = ${ct_id}]`);
 
-                db.query(sql, data)
+                client.query(sql, data)
                     .then(result => {
                         res.end()
                     })
@@ -175,14 +175,14 @@ var Cluster = {
                         console.error(e.stack)
                         res.json({ error: e.stack })
                     })
-                    .then(() => db.end())
+                    .then(() => client.end())
 
             })
             .catch(e => {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
 }

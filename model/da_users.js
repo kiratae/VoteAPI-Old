@@ -1,60 +1,63 @@
 const config = require('../config/config.js')
-    // const mysql = require('mysql')
-    // const db = mysql.createConnection(config.mysql_connect)
-const { Client } = require('pg');
+// const mysql = require('mysql')
+// const client = mysql.createConnection(config.mysql_connect)
+const { Pool, Client } = require('pg');
 
 var Users = {
     insert: (req, res) => {
-        //grab the site section from the req variable (/strains/)
-        //console.log(req) to see all the goodies
-        let pathname = req._parsedUrl.pathname.split('/');
-        //split makes an array, so pick the second row
-        let section = pathname[1];
-
-        //sql
-        let sql = `INSERT INTO vt_users (us_username, us_password, us_ut_id) VALUES ($1, $2, $3) RETURNING us_id`;
-
-        let us_username = req.body.us_username;
-        let us_password = req.body.us_password;
-        let us_ut_id = req.body.us_ut_id;
-        let data = [us_username, us_password, us_ut_id];
-
         console.log(`Users -> call: insert [us_username = ${us_username}]`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
-            .then(result => {
-                // get inserted id
-                console.log(`us_id: ${result.rows[0].us_id}`)
+        const pool = new Pool(config.postgresql_connect);
+        pool.connect((err, client, done) => {
+            const shouldAbort = err => {
+                if (err) {
+                    console.error('Error in transaction', err.stack)
+                    client.query('ROLLBACK', err => {
+                        if (err) {
+                            console.error('Error rolling back client', err.stack)
+                        }
+                        // release the client back to the pool
+                        done()
+                    })
+                }
+                return !!err
+            }
 
-                //sql
-                let sql = `INSERT INTO vt_user_point_matching (um_us_id, um_points) VALUES ($1, $2) RETURNING um_id`;
+            client.query('BEGIN', err => {
+                if (shouldAbort(err)) return
 
-                let um_us_id = results.rows[0].us_id;
-                let um_points = req.body.um_points;
-                let data = [um_us_id, um_points];
+                const sql = `INSERT INTO vt_users (us_username, us_password, us_ut_id) VALUES ($1, $2, $3) RETURNING us_id`;
 
-                console.log(`Users -> call: insert [um_points = ${um_points}]`);
+                const us_username = req.body.us_username;
+                const us_password = req.body.us_password;
+                const us_ut_id = req.body.us_ut_id;
+                const data = [us_username, us_password, us_ut_id];
 
-                db.query(sql, data)
-                    .then(result => {
+                client.query(sql, data, (err, result) => {
+                    if (shouldAbort(err)) return
+
+                    const sql = `INSERT INTO vt_user_point_matching (um_us_id, um_points) VALUES ($1, $2) RETURNING um_id`;
+
+                    const um_us_id = result.rows[0].us_id;
+                    const um_points = req.body.um_points;
+                    const data = [um_us_id, um_points];
+
+                    client.query(sql, data, (err, result) => {
+                        if (shouldAbort(err)) return
+
                         // get inserted id
                         console.log(`um_id: ${result.rows[0].um_id}`)
                         res.json({ "um_id": result.rows[0].um_id })
-                    })
-                    .catch(e => {
-                        console.error(e.stack)
-                        res.json({ error: e.stack })
-                    })
-                    .then(() => db.end())
 
+                        client.query('COMIT', err => {
+                            if (err) console.error('Error committing transaction', err.stack)
+                            done()
+                        })
+
+                    })
+                })
             })
-            .catch(e => {
-                console.error(e.stack)
-                res.json({ error: e.stack })
-            })
-            .then(() => db.end())
+        })
 
     },
     get_by_key: (req, res) => {
@@ -85,9 +88,9 @@ var Users = {
 
         console.log(`Users -> call: get_by_key [ us_id = ${us_id} ]`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.json({ status: 1, data: result.rows })
             })
@@ -95,7 +98,7 @@ var Users = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .finally(() => db.end())
+            .finally(() => client.end())
     },
     can_vote: (req, res) => {
         //grab the site section from the req variable (/strains/)
@@ -118,15 +121,15 @@ var Users = {
 
         console.log(`Users -> call: can_vote [ us_id = ${us_id} ]`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => res.json(result.rows[0]))
             .catch(e => {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     },
     update_login: (req, res) => {
         //sql
@@ -139,9 +142,9 @@ var Users = {
 
         console.log(`Users -> call: update_login [us_id = ${us_id}]`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.end()
             })
@@ -149,7 +152,7 @@ var Users = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     },
     delete: (req, res) => {
         //grab the site section from the req variable (/strains/)
@@ -168,9 +171,9 @@ var Users = {
 
         console.log(`Users -> call: delete [us_id = ${us_id}]`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
 
                 //sql
@@ -179,7 +182,7 @@ var Users = {
                 let um_us_id = req.params.us_id;
                 let data = [um_us_id]
 
-                db.query(sql, data)
+                client.query(sql, data)
                     .then(result => {
                         res.end()
                     })
@@ -187,14 +190,14 @@ var Users = {
                         console.error(e.stack)
                         res.json({ error: e.stack })
                     })
-                    .then(() => db.end())
+                    .then(() => client.end())
 
             })
             .catch(e => {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     },
 }
 

@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
 // const mysql = require('mysql')
-// const db = mysql.createConnection(config.mysql_connect)
+// const client = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 var Cluster = {
@@ -20,9 +20,9 @@ var Cluster = {
 
         console.log(`Cluster -> call: get_all`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -30,7 +30,7 @@ var Cluster = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     },
     get_all_dashboard: (req, res) => {
         //grab the site section from the req variable (/strains/)
@@ -62,9 +62,9 @@ var Cluster = {
 
         console.log(`Cluster -> call: get_all_dashboard`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -72,7 +72,7 @@ var Cluster = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     },
     get_all_leaderboard: (req, res) => {
         //grab the site section from the req variable (/strains/)
@@ -100,9 +100,9 @@ var Cluster = {
 
         console.log(`Cluster -> call: get_all_leaderboard`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -110,7 +110,7 @@ var Cluster = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
     }
 }
 

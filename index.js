@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 
-// db postgresql
+// client postgresql
 var types = require('pg').types
 types.setTypeParser(20, parseInt);
 const { Client } = require('pg');
@@ -38,9 +38,9 @@ const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
     let sql = `SELECT us_id FROM vt_users WHERE us_username = $1`;
     let data = [payload.sub];
 
-    const db = new Client(config.postgresql_connect);
-    db.connect()
-    db.query(sql, data)
+    const client = new Client(config.postgresql_connect);
+    client.connect()
+    client.query(sql, data)
         .then(result => {
             if (result.rows.length > 0) done(null, true);
             else done(null, false);
@@ -49,7 +49,7 @@ const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
             console.error(e.stack)
             res.json({ error: e })
         })
-        .finally(() => db.end())
+        .finally(() => client.end())
 });
 //เสียบ Strategy เข้า Passport
 passport.use(jwtAuth);
@@ -72,9 +72,9 @@ const loginMiddleWare = (req, res, next) => {
 
     console.log(`JWT -> call: loginMiddleWare [us_username = ${us_username}]`);
     
-    const db = new Client(config.postgresql_connect);
-    db.connect()
-    db.query(sql, data)
+    const client = new Client(config.postgresql_connect);
+    client.connect()
+    client.query(sql, data)
         .then(result => {
             if (result.rows.length > 0) {
                 res.locals.user = result.rows[0]
@@ -86,7 +86,7 @@ const loginMiddleWare = (req, res, next) => {
             console.error(e.stack)
             res.json({ error: e.stack })
         })
-        .finally(() => db.end())
+        .finally(() => client.end())
 };
 // END JWT
 
@@ -190,9 +190,9 @@ app.get("/timesync", (req, res) => {
 
     console.log(`timesync -> call now`)
 
-    const db = new Client(config.postgresql_connect);
-    db.connect()
-    db.query(sql)
+    const client = new Client(config.postgresql_connect);
+    client.connect()
+    client.query(sql)
         .then(result => {
             res.json(result.rows)
         })
@@ -200,6 +200,6 @@ app.get("/timesync", (req, res) => {
             console.error(e.stack)
             res.json({ error: e.stack })
         })
-        .finally(() => db.end())
+        .finally(() => client.end())
 
 });

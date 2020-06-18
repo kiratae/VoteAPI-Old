@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
 // const mysql = require('mysql')
-// const db = mysql.createConnection(config.mysql_connect)
+// const client = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 var VoteTime = {
@@ -23,9 +23,9 @@ var VoteTime = {
 
         console.log(`VoteTime -> call: update [vt_vote_time]`);
 
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
         .then(result => {
             res.json({ status: 1, data: result.rows })
         })
@@ -33,7 +33,7 @@ var VoteTime = {
             console.error(e.stack)
             res.json({ error: e })
         })
-        .then(() => db.end())
+        .then(() => client.end())
     }
 }
 

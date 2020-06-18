@@ -1,6 +1,6 @@
 const config = require('../config/config.js')
     // const mysql = require('mysql')
-    // const db = mysql.createConnection(config.mysql_connect)
+    // const client = mysql.createConnection(config.mysql_connect)
 const { Client } = require('pg');
 
 var UserType = {
@@ -19,9 +19,9 @@ var UserType = {
         let data = [ut_name_th, ut_name_en]
 
         console.log(`UserType -> call: insert [ut_name_th = ${ut_name_th}]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 // get inserted id
                 console.log(`ut_id: ${result.rows[0].ut_id}\n`);
@@ -32,7 +32,7 @@ var UserType = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
     update: (req, res) => {
@@ -56,9 +56,9 @@ var UserType = {
         if (!ut_id) res.end();
 
         console.log(`UserType -> call: update [ut_id = ${ut_id}]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.json({ 'status': true })
             })
@@ -66,7 +66,7 @@ var UserType = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
     get_by_key: (req, res) => {
@@ -87,9 +87,9 @@ var UserType = {
         if (!ut_id) res.end();
 
         console.log(`UserType -> call: get_by_key [ ut_id = ${ut_id} ]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.json({ status: 0, data: result.rows })
             })
@@ -97,7 +97,7 @@ var UserType = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     },
     delete: (req, res) => {
@@ -116,9 +116,9 @@ var UserType = {
         if (!ut_id) res.end();
 
         console.log(`UserType -> call: delete -> [ut_id = ${ut_id}]`);
-        const db = new Client(config.postgresql_connect);
-        db.connect()
-        db.query(sql, data)
+        const client = new Client(config.postgresql_connect);
+        client.connect()
+        client.query(sql, data)
             .then(result => {
                 res.end()
             })
@@ -126,7 +126,7 @@ var UserType = {
                 console.error(e.stack)
                 res.json({ error: e.stack })
             })
-            .then(() => db.end())
+            .then(() => client.end())
 
     }
 }
