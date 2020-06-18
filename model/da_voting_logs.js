@@ -38,6 +38,8 @@ var VotingLogs = {
                 const sc_score = req.body.sc_score
                 const data = [sc_score, us_id]
 
+                console.log(`Vote Log -> call: insert(checking) [us_id = ${us_id}, sc_score = ${sc_score}]`)
+
                 client.query(sql, data, (err, result) => {
                     if (shouldAbort(err)) return
 
@@ -49,6 +51,8 @@ var VotingLogs = {
                         const sc_score = req.body.sc_score;
                         const sc_ct_id = req.body.ct_id;
                         const data = [us_id, sc_ct_id, sc_score]
+
+                        console.log(`Vote Log -> call: insert [us_id = ${us_id}, sc_ct_id = ${sc_ct_id}, sc_score = ${sc_score}]`)
 
                         client.query(sql, data, (err, result) => {
                             if (shouldAbort(err)) return

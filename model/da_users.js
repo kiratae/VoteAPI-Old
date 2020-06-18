@@ -5,8 +5,7 @@ const { Pool, Client } = require('pg');
 
 var Users = {
     insert: (req, res) => {
-        console.log(`Users -> call: insert [us_username = ${us_username}]`);
-
+    
         const pool = new Pool(config.postgresql_connect);
         pool.connect((err, client, done) => {
             const shouldAbort = err => {
@@ -33,6 +32,8 @@ var Users = {
                 const us_ut_id = req.body.us_ut_id;
                 const data = [us_username, us_password, us_ut_id];
 
+                console.log(`Users -> call: insert(0) [us_username = ${us_username}]`);
+
                 client.query(sql, data, (err, result) => {
                     if (shouldAbort(err)) return
 
@@ -41,6 +42,8 @@ var Users = {
                     const um_us_id = result.rows[0].us_id;
                     const um_points = req.body.um_points;
                     const data = [um_us_id, um_points];
+
+                    console.log(`Users -> call: insert(1) [um_us_id = ${um_us_id}]`);
 
                     client.query(sql, data, (err, result) => {
                         if (shouldAbort(err)) return
