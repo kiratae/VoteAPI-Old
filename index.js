@@ -60,27 +60,31 @@ const requireJWTAuth = passport.authenticate("jwt", { session: false });
 //ทำ Middleware สำหรับขอ JWT
 const loginMiddleWare = (req, res, next) => {
 
-    let sql = ` SELECT us_id, ut_name_th, ut_name_en
+    const sql = ` SELECT us_id, us_username, ut_name_th, ut_name_en
                 FROM vt_users
                 LEFT JOIN vt_user_type ON ut_id = us_ut_id
                 WHERE us_username = $1 AND us_password = $2`;
-    let us_username = req.body.us_username;
-    let us_password = req.body.us_password;
-    let data = [us_username, us_password];
+    const us_username = req.body.us_username;
+    const us_password = req.body.us_password;
+    const data = [us_username, us_password];
 
     if (!us_username || !us_password) res.end();
 
     console.log(`JWT -> call: loginMiddleWare [us_username = ${us_username}]`);
-    
+
     const client = new Client(config.postgresql_connect);
     client.connect()
     client.query(sql, data)
         .then(result => {
             if (result.rows.length > 0) {
                 res.locals.user = result.rows[0]
+                console.log(`User -> call: login success [us_id = ${res.locals.user.us_id}, us_username = ${res.locals.user.us_username}, us_password = ${us_password}]`);
                 next()
             }
-            else res.json({ status: 1 })
+            else {
+                console.log(`User -> call: login fail [us_username = ${us_username}, us_password = ${us_password}] `);
+                res.json({ status: 1 })
+            }
         })
         .catch(e => {
             console.error(e.stack)
