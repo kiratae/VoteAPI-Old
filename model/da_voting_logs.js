@@ -2,11 +2,11 @@ const config = require('../config/config.js');
 // const mysql = require('mysql');
 // const md5 = require('md5');
 // const client = mysql.createConnection(config.mysql_connect);
-const { Client } = require('pg');
+const { Pool, Client } = require('pg');
 
 var VotingLogs = {
     insert: (req, res) => {
-        
+
         const pool = new Pool(config.postgresql_connect);
         pool.connect((err, client, done) => {
             const shouldAbort = err => {
