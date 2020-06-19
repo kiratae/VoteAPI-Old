@@ -190,7 +190,7 @@ app.put('/scrum/events', my_model.da_event.Event.update)
 app.get("/timesync", (req, res) => {
 
     //sql
-    let sql = `SELECT NOW() + interval '7 hour' AS now;`;
+    let sql = `SELECT NOW() AS now;`;
 
     console.log(`timesync -> call now`)
 
