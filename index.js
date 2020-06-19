@@ -207,3 +207,7 @@ app.get("/timesync", (req, res) => {
         .finally(() => client.end())
 
 });
+
+app.get('/loaderio-cb9805ca1b3021c59a833d29ffda950b', (req, res) => {
+    res.end()
+})
