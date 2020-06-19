@@ -209,5 +209,5 @@ app.get("/timesync", (req, res) => {
 });
 
 app.get('/loaderio-cb9805ca1b3021c59a833d29ffda950b', (req, res) => {
-    res.end()
+    res.send('loaderio-cb9805ca1b3021c59a833d29ffda950b')
 })
